@@ -1,3 +1,4 @@
+import HomeLayouts from "@/layouts/Home";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 function Home() {
@@ -8,7 +9,13 @@ export default function AppRoutes() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Home />,
+      element: <HomeLayouts />,
+      children: [
+        {
+          index: true,
+          element: <Home />,
+        },
+      ],
     },
   ]);
 
