@@ -1,9 +1,9 @@
+import AppRoutes from "./Routes/AppRoutes";
+
 function App() {
   return (
     <>
-      <h1 className="text-3xl font-bold underline text-yellow-100">
-        Hello world!
-      </h1>
+      <AppRoutes />
     </>
   );
 }
