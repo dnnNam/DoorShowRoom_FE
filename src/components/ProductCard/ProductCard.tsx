@@ -1,9 +1,8 @@
-import React from "react";
 import { Link } from "react-router-dom";
 
+import type { Product } from "@/data/product";
 import { ShoppingCart } from "lucide-react";
 import Button from "../ui/button";
-import type { Product } from "@/data/product";
 interface ProductCardProps {
   product: Product;
 }
