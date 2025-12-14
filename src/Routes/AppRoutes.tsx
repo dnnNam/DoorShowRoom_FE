@@ -1,4 +1,5 @@
 import HomeLayouts from "@/layouts/Home";
+import About from "@/pages/About";
 import Home from "@/pages/Home";
 import Products from "@/pages/Product";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -14,6 +15,7 @@ export default function AppRoutes() {
           element: <Home />,
         },
         { path: "products", element: <Products /> },
+        { path: "about", element: <About /> },
       ],
     },
   ]);
