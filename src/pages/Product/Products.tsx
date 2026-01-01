@@ -1,16 +1,16 @@
 import ProductCard from "@/components/ProductCard";
-import { products } from "@/data/product";
-import { Search } from "lucide-react";
+import { useAllProducts } from "@/hooks/productHooks";
+
+import { Search, X } from "lucide-react";
 import { useState } from "react";
 
 const categories = ["Tất cả", "Cửa Gỗ", "Cửa Kính", "Cửa Cuốn", "Cửa Nhôm"];
 export default function Products() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("Tất cả");
-  const filteredProducts =
-    activeCategory === "Tất cả"
-      ? products
-      : products.filter((p) => p.category === activeCategory);
+  const { data } = useAllProducts();
+  console.log(data);
+
   return (
     <div className="bg-stone-50 min-h-screen py-12">
       <div className="container mx-auto px-4">
@@ -34,18 +34,20 @@ export default function Products() {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 " />
                 <input
                   type="text"
+                  placeholder="Tìm kiếm sản phẩm theo tên, loại cửa..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Tìm kiếm sản phẩm theo tên, loại cửa..."
-                  className="w-full pl-12 pr-4 py-3 text-base border-2 border-gray-200 rounded-lg"
+                  className="w-full pl-12 pr-4 py-3 text-base border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#C4661F] transition-colors"
                 />
                 {searchQuery && (
-                  <button
+                  <span
                     onClick={() => setSearchQuery("")}
-                    className="absolute right-4 top-1/2 -translate-y-1/2"
+                    className="absolute right-4 top-1/2 -translate-y-1/2
+             p-1 cursor-pointer
+             text-gray-400 hover:text-gray-600"
                   >
-                    ✕
-                  </button>
+                    <X className="w-4 h-4" />
+                  </span>
                 )}
               </div>
             </div>
@@ -68,11 +70,11 @@ export default function Products() {
             </button>
           ))}
         </div>
-        {/* Product Grid */}
-        {filteredProducts.length > 0 ? (
+
+        {data?.data && data?.data.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+            {data.data.map((product) => (
+              <ProductCard key={product.ProductId} product={product} />
             ))}
           </div>
         ) : (

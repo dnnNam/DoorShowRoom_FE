@@ -3,10 +3,13 @@ import { Link } from "react-router-dom";
 import { ArrowRight, ShieldCheck, Truck, PenTool, Star } from "lucide-react";
 
 import Button from "@/components/ui/button";
-import { products } from "@/data/product";
+
 import ProductCard from "@/components/ProductCard";
+import { useAllProducts } from "@/hooks/productHooks";
+
 export default function Home() {
-  const featuredProducts = products.slice(0, 4);
+  const { data } = useAllProducts();
+  const featuredProducts = data?.data?.slice(0, 4) || [];
   const features = [
     {
       icon: <ShieldCheck className="h-8 w-8 text-amber-700" />,
@@ -179,7 +182,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.ProductId} product={product} />
             ))}
           </div>
 
