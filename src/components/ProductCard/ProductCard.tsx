@@ -1,48 +1,65 @@
-import { Link } from "react-router-dom";
-
-import { ShoppingCart } from "lucide-react";
+import { Eye, ShoppingCart } from "lucide-react";
 import Button from "../ui/button";
 import type { Product } from "@/types/api/product.type";
 
-export default function ProductCard({ product }: { product: Product }) {
+export function ProductCard({ product }: { product: Product }) {
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-lg border border-stone-200 bg-white shadow-sm transition-all hover:shadow-md">
-      <div className="aspect-[4/5] overflow-hidden bg-stone-100">
+    <div className="group bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col h-full">
+      <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
         <img
-          src={product?.ProductImages[0]?.ImageUrl}
-          alt={product?.ProductName}
-          className="h-full w-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
+          src={product.ProductImages[0]?.ImageUrl}
+          alt="Product Image"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
+        {/* {(product.isNew || product.isBestSeller) && (
+          <div className="absolute top-2 left-2 flex flex-col gap-1">
+            {product.isNew && (
+              <span className="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">
+                MỚI
+              </span>
+            )}
+            {product.isBestSeller && (
+              <span className="bg-orange-600 text-white text-xs font-bold px-2 py-1 rounded">
+                HOT
+              </span>
+            )}
+          </div>
+        )} */}
+        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+          <Button
+            variant="secondary"
+            size="sm"
+            className="translate-y-4 group-hover:translate-y-0 transition-transform duration-300"
+          >
+            <Eye className="w-4 h-4 mr-1" /> Xem nhanh
+          </Button>
+        </div>
       </div>
-      <div className="flex flex-1 flex-col p-4">
-        <div className="mb-2 text-xs font-medium text-amber-700">
+
+      <div className="p-4 flex flex-col flex-grow">
+        <div className="text-xs text-gray-500 mb-1 uppercase tracking-wide">
           {product.Categories.CategoryName}
         </div>
-        <h3 className="mb-2 text-lg font-semibold text-stone-900 line-clamp-2">
-          <Link to={`/products/${product.ProductId}`}>
-            <span aria-hidden="true" className="absolute inset-0" />
-            {product?.ProductName}
-          </Link>
+        <h3 className="font-medium text-gray-900 mb-2 line-clamp-2 min-h-[2.5rem] group-hover:text-orange-600 transition-colors">
+          {product.ProductName}
         </h3>
-        <p className="mb-4 text-sm text-stone-500 line-clamp-2 flex-1">
-          {product?.Description}
-        </p>
-        <div className="flex items-center justify-between mt-auto">
-          <span className="text-lg font-bold text-stone-900">
-            {product?.Price
-              ? Number(product.Price).toLocaleString("vi-VN") + " đ"
-              : "0 đ"}
-          </span>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="z-10 relative text-amber-700 hover:text-amber-800 hover:bg-amber-50"
-          >
-            <ShoppingCart className="h-4 w-4 mr-2" />
-            Chi tiết
+
+        <div className="mt-auto">
+          <div className="flex items-baseline gap-2 mb-3">
+            <span className="text-lg font-bold text-orange-600">
+              {product?.Price
+                ? Number(product.Price).toLocaleString("vi-VN") + " đ"
+                : "0 đ"}
+            </span>
+          </div>
+
+          <Button variant="primary" fullWidth className="group/btn">
+            <span className="mr-2">Chi tiết</span>
+            <ShoppingCart className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
           </Button>
         </div>
       </div>
     </div>
   );
 }
+export default ProductCard;
