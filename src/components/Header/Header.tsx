@@ -1,107 +1,148 @@
-import { DoorOpen, Menu, Phone, X } from "lucide-react";
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Button } from "../ui/button";
+import { Menu, Phone, Search } from "lucide-react";
+import Button from "../ui/button";
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const location = useLocation();
-  const navLinks = [
-    { name: "Trang chủ", path: "/" },
-    { name: "Sản phẩm", path: "/products" },
-    { name: "Giới thiệu", path: "/about" },
-    { name: "Liên hệ", path: "/contact" },
-  ];
-  const isActive = (path: string) => {
-    return location.pathname === path;
-  };
   return (
-    <header className="sticky top-0 z-40 w-full bg-white border-b border-stone-200 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="bg-amber-700 p-2 rounded-lg">
-              <DoorOpen className="h-8 w-8 text-white" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-bold text-stone-900 leading-none">
-                CỬA ĐẸP
-              </span>
-              <span className="text-xs text-amber-700 font-medium tracking-wider">
-                VIỆT NAM
-              </span>
-            </div>
-          </Link>
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`text-sm font-medium transition-colors hover:text-amber-700 ${
-                  isActive(link.path) ? "text-amber-700" : "text-stone-600"
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
-          </nav>
-          {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-4">
-            <div className="hidden lg:flex items-center text-stone-500 mr-2">
-              <Phone className="h-4 w-4 mr-2" />
-              <span className="text-sm font-semibold">0912.345.678</span>
-            </div>
-            <Button size="sm" className="hidden lg:inline-flex">
-              Nhận báo giá
-            </Button>
-          </div>
-          {/* Mobile Menu Button */}
-          <div className="flex md:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-stone-500 hover:text-stone-900 focus:outline-none"
-            >
-              {isMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
+    <header className="bg-white sticky top-0 z-50 shadow-sm">
+      {/* Top Bar */}
+      <div className="bg-gray-900 text-white text-xs py-2 px-4">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <p>Chào mừng đến với Cửa Đẹp Việt Nam - Chất lượng tạo niềm tin</p>
+          <div className="flex gap-4">
+            <a href="#" className="hover:text-orange-400">
+              Tin tức
+            </a>
+            <a href="#" className="hover:text-orange-400">
+              Tuyển dụng
+            </a>
+            <a href="#" className="hover:text-orange-400">
+              Liên hệ
+            </a>
           </div>
         </div>
       </div>
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-white border-t border-stone-100 animate-in slide-in-from-top-5 duration-200">
-          <div className="px-4 pt-2 pb-6 space-y-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                onClick={() => setIsMenuOpen(false)}
-                className={`block px-3 py-3 rounded-md text-base font-medium ${
-                  isActive(link.path)
-                    ? "bg-amber-50 text-amber-700"
-                    : "text-stone-600 hover:bg-stone-50 hover:text-stone-900"
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
-            <div className="pt-4 mt-4 border-t border-stone-100">
-              <div className="flex items-center px-3 py-2 text-stone-600 mb-3">
-                <Phone className="h-5 w-5 mr-3" />
-                <span className="font-medium">Hotline: 0912.345.678</span>
+      {/* Main Header */}
+      <div className="border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 py-4 md:py-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            {/* Logo */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="bg-orange-600 text-white p-2 rounded-lg">
+                  <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M3 21h18M5 21V7l8-4 8 4v14" />
+                    <path d="M13 11v10" />
+                  </svg>
+                </div>
+                <div>
+                  <h1 className="text-xl md:text-2xl font-bold text-gray-900 leading-none">
+                    CỬA ĐẸP
+                  </h1>
+                  <span className="text-xs text-orange-600 font-bold tracking-widest">
+                    VIỆT NAM
+                  </span>
+                </div>
               </div>
-              <Button className="w-full justify-center">
-                Nhận báo giá ngay
+
+              <button className="md:hidden p-2 text-gray-600">
+                <Menu className="w-6 h-6" />
+              </button>
+            </div>
+            {/* Search */}
+            <div className="flex-1 max-w-xl mx-auto w-full">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm sản phẩm theo tên, loại cửa..."
+                  className="w-full pl-4 pr-12 py-2.5 rounded-full border border-gray-300 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all"
+                />
+                <button className="absolute right-1.5 top-1.5 p-1.5 bg-orange-600 text-white rounded-full hover:bg-orange-700 transition-colors">
+                  <Search className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+            {/* Actions */}
+            <div className="hidden md:flex items-center gap-6">
+              <div className="flex items-center gap-2 text-right">
+                <div className="p-2 bg-orange-50 rounded-full text-orange-600">
+                  <Phone className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Hotline tư vấn</p>
+                  <p className="font-bold text-gray-900">0912.345.678</p>
+                </div>
+              </div>
+              <Button variant="primary" size="sm">
+                Nhận báo giá
               </Button>
             </div>
           </div>
         </div>
-      )}
+      </div>
+      {/* Navigation */}
+      <nav className="hidden md:block border-b border-gray-100 bg-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <ul className="flex items-center gap-8 text-sm font-medium text-gray-700">
+            <li>
+              <a
+                href="#"
+                className="block py-4 text-orange-600 border-b-2 border-orange-600"
+              >
+                Trang chủ
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="block py-4 hover:text-orange-600 transition-colors"
+              >
+                Sản phẩm
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="block py-4 hover:text-orange-600 transition-colors"
+              >
+                Dự án
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="block py-4 hover:text-orange-600 transition-colors"
+              >
+                Bảng giá
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="block py-4 hover:text-orange-600 transition-colors"
+              >
+                Giới thiệu
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="block py-4 hover:text-orange-600 transition-colors"
+              >
+                Liên hệ
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
     </header>
   );
 }
