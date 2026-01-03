@@ -4,6 +4,10 @@ export interface ProductImage {
   ImageUrl: string;
 }
 
+export interface Category {
+  CategoryName: string;
+}
+
 export interface Product {
   ProductId: number;
   ProductName: string;
@@ -17,4 +21,5 @@ export interface Product {
   IsActive: boolean;
   CreatedAt: string;
   ProductImages: ProductImage[];
+  Categories: Category;
 }

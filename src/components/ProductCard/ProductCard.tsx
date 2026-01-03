@@ -15,6 +15,9 @@ export default function ProductCard({ product }: { product: Product }) {
         />
       </div>
       <div className="flex flex-1 flex-col p-4">
+        <div className="mb-2 text-xs font-medium text-amber-700">
+          {product.Categories.CategoryName}
+        </div>
         <h3 className="mb-2 text-lg font-semibold text-stone-900 line-clamp-2">
           <Link to={`/products/${product.ProductId}`}>
             <span aria-hidden="true" className="absolute inset-0" />
