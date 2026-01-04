@@ -1,6 +1,5 @@
-import React from "react";
+import { ArrowRight, PenTool, ShieldCheck, Star, Wrench } from "lucide-react";
 import { Link } from "react-router-dom";
-import { ArrowRight, ShieldCheck, Truck, PenTool, Star } from "lucide-react";
 
 import Button from "@/components/ui/button";
 
@@ -18,10 +17,10 @@ export default function Home() {
         "Cam kết sản phẩm chính hãng, độ bền cao, bảo hành dài hạn lên đến 10 năm.",
     },
     {
-      icon: <Truck className="h-8 w-8 text-amber-700" />,
-      title: "Vận chuyển toàn quốc",
+      icon: <Wrench className="h-8 w-8 text-amber-700" />,
+      title: "Khảo sát và lắp đặt tận nơi",
       description:
-        "Hỗ trợ vận chuyển và lắp đặt tận nơi trên toàn lãnh thổ Việt Nam.",
+        "Đội ngũ kỹ thuật viên chuyên nghiệp , tạo niềm tin và thể hiện dịch vụ giá trị cao ",
     },
     {
       icon: <PenTool className="h-8 w-8 text-amber-700" />,
