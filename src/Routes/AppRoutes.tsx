@@ -3,6 +3,7 @@ import About from "@/pages/About";
 import Contact from "@/pages/Contact/Contact";
 import Home from "@/pages/Home";
 import Products from "@/pages/Product";
+
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 export default function AppRoutes() {
