@@ -1,7 +1,19 @@
 import { Menu, Phone, Search } from "lucide-react";
 import Button from "../ui/button";
+import { NavLink, useMatch } from "react-router-dom";
 
 export default function Header() {
+  const navItems = [
+    { to: "/", label: "Trang chủ" },
+    { to: "/products", label: "Sản phẩm" },
+    { to: "/projects", label: "Dự án" },
+    { to: "/pricing", label: "Bảng giá" },
+    { to: "/about", label: "Giới thiệu" },
+    { to: "/contact", label: "Liên hệ" },
+  ];
+
+  const isMatch = useMatch("/products/*");
+
   return (
     <header className="bg-white sticky top-0 z-50 shadow-sm">
       {/* Top Bar */}
@@ -58,18 +70,31 @@ export default function Header() {
               </button>
             </div>
             {/* Search */}
-            <div className="flex-1 max-w-xl mx-auto w-full">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Tìm kiếm sản phẩm theo tên, loại cửa..."
-                  className="w-full pl-4 pr-12 py-2.5 rounded-full border border-gray-300 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all"
-                />
-                <button className="absolute right-1.5 top-1.5 p-1.5 bg-orange-600 text-white rounded-full hover:bg-orange-700 transition-colors">
-                  <Search className="w-4 h-4" />
-                </button>
+
+            {isMatch && (
+              <div className="flex-1 max-w-xl mx-auto w-full">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Tìm kiếm sản phẩm theo tên, loại cửa..."
+                    className="w-full pl-4 pr-12 py-2.5 rounded-full border border-gray-300 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all"
+                  />
+                  <button
+                    type="button"
+                    className="
+                  absolute right-4 top-1/2 -translate-y-1/2
+                  bg-none! bg-transparent!  border-none! outline-none! shadow-none!
+           
+                  p-0 m-0
+                  text-gray-500 hover:text-orange-600
+                "
+                  >
+                    <Search className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
+
             {/* Actions */}
             <div className="hidden md:flex items-center gap-6">
               <div className="flex items-center gap-2 text-right">
@@ -92,54 +117,23 @@ export default function Header() {
       <nav className="hidden md:block border-b border-gray-100 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <ul className="flex items-center gap-8 text-sm font-medium text-gray-700">
-            <li>
-              <a
-                href="#"
-                className="block py-4 text-orange-600 border-b-2 border-orange-600"
-              >
-                Trang chủ
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block py-4 hover:text-orange-600 transition-colors"
-              >
-                Sản phẩm
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block py-4 hover:text-orange-600 transition-colors"
-              >
-                Dự án
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block py-4 hover:text-orange-600 transition-colors"
-              >
-                Bảng giá
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block py-4 hover:text-orange-600 transition-colors"
-              >
-                Giới thiệu
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block py-4 hover:text-orange-600 transition-colors"
-              >
-                Liên hệ
-              </a>
-            </li>
+            {navItems.map((item) => (
+              <li key={item.to}>
+                <NavLink
+                  to={item.to}
+                  end={item.to === "/"}
+                  className={({ isActive }) =>
+                    `block py-4 no-underline !text-gray-900 transition-colors ${
+                      isActive
+                        ? "border-b-2 border-orange-600"
+                        : "hover:text-orange-600"
+                    }`
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              </li>
+            ))}
           </ul>
         </div>
       </nav>
