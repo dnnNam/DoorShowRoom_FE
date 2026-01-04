@@ -27,14 +27,6 @@ export default function Products() {
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-900">
       <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* Breadcrumbs */}
-        <div className="flex items-center text-sm text-gray-500 mb-8">
-          <a href="#" className="hover:text-orange-600">
-            Trang chủ
-          </a>
-          <span className="mx-2">/</span>
-          <span className="text-gray-900 font-medium">Sản phẩm</span>
-        </div>
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar - Desktop */}
           <aside className="hidden lg:block w-72 flex-shrink-0">
@@ -91,37 +83,32 @@ export default function Products() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-20">
-                <p className="text-stone-500 text-lg">
-                  Không tìm thấy sản phẩm nào trong danh mục này.
+              <div className="bg-white p-12 rounded-lg border border-dashed border-gray-300 text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                  <SlidersHorizontal className="w-8 h-8 text-gray-400" />
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  Không tìm thấy sản phẩm
+                </h3>
+                <p className="text-gray-500 mb-6">
+                  Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm của bạn
                 </p>
+                <button
+                  onClick={() =>
+                    setFilters({
+                      categories: [],
+                      priceRange: [0, 50000000],
+                      materials: [],
+                      sizes: [],
+                      colors: [],
+                    })
+                  }
+                  className="text-orange-600 font-medium hover:underline"
+                >
+                  Xóa tất cả bộ lọc
+                </button>
               </div>
             )}
-            <div className="bg-white p-12 rounded-lg border border-dashed border-gray-300 text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
-                <SlidersHorizontal className="w-8 h-8 text-gray-400" />
-              </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Không tìm thấy sản phẩm
-              </h3>
-              <p className="text-gray-500 mb-6">
-                Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm của bạn
-              </p>
-              <button
-                onClick={() =>
-                  setFilters({
-                    categories: [],
-                    priceRange: [0, 50000000],
-                    materials: [],
-                    sizes: [],
-                    colors: [],
-                  })
-                }
-                className="text-orange-600 font-medium hover:underline"
-              >
-                Xóa tất cả bộ lọc
-              </button>
-            </div>
           </div>
         </div>
       </main>
