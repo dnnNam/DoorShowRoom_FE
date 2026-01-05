@@ -28,13 +28,15 @@ const COLOR_MAP: Record<Color, string> = {
   Xám: "#808080",
   "Tự nhiên": "#D2B48C",
 };
-export function ProductDetail({
+export default function ProductDetail({
   product,
   allProducts,
   onBack,
   onProductClick,
 }: ProductDetailProps) {
-  const [selectedColor, setSelectedColor] = useState<Color>(product.Color as Color);
+  const [selectedColor, setSelectedColor] = useState<Color>(
+    product.Color as Color
+  );
   const [quantity, setQuantity] = useState(1);
 
   return (
@@ -107,9 +109,7 @@ export function ProductDetail({
                 Kích thước:
               </label>
               <div className="flex flex-wrap gap-3">
-                <button
-                  className="px-4 py-2 text-sm border border-orange-600 bg-orange-50 text-orange-700 ring-1 ring-orange-600 rounded-md"
-                >
+                <button className="px-4 py-2 text-sm border border-orange-600 bg-orange-50 text-orange-700 ring-1 ring-orange-600 rounded-md">
                   {product.Size}
                 </button>
               </div>
@@ -135,7 +135,8 @@ export function ProductDetail({
                   <span className="absolute inset-0 flex items-center justify-center">
                     <Check
                       className={`w-5 h-5 ${
-                        product.Color === "Trắng" || product.Color === "Tự nhiên"
+                        product.Color === "Trắng" ||
+                        product.Color === "Tự nhiên"
                           ? "text-black"
                           : "text-white"
                       }`}
