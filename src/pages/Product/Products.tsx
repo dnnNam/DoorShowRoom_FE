@@ -1,28 +1,28 @@
-import {
-  FilterSidebar,
-  type Category,
-  type Color,
-  type Material,
-  type Size,
-} from "@/components/FilterSideBar/FilterSideBar";
+import FilterSidebar from "@/components/FilterSideBar";
 import ProductCard from "@/components/ProductCard";
-import { useAllProducts } from "@/hooks/productHooks";
 
-import { ChevronDown, SlidersHorizontal } from "lucide-react";
+import { useAllProducts } from "@/hooks/productHooks";
+import type { FilterState } from "@/types/domain/product.type";
+
+import { SlidersHorizontal, X } from "lucide-react";
 import { useState } from "react";
 
-type SortOption = "price-asc" | "price-desc" | "newest" | "bestseller";
 export default function Products() {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
-  const [sortOption, setSortOption] = useState<SortOption>("newest");
-  const { data } = useAllProducts();
-  const [filters, setFilters] = useState({
-    categories: [] as Category[],
-    priceRange: [0, 50000000] as [number, number],
-    materials: [] as Material[],
-    sizes: [] as Size[],
-    colors: [] as Color[],
+  // const [sortOption, setSortOption] = useState<SortOption>("newest");
+
+  const [filters, setFilters] = useState<FilterState>({
+    CategoryId: null,
+    minPrice: 0,
+    maxPrice: 8500000,
+    Materials: null,
+    Sizes: null,
+    Colors: null,
   });
+  console.log("filters nè: ", filters);
+
+  const { data } = useAllProducts(filters);
+  console.log("data từ API: ", data?.data);
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-900">
@@ -40,6 +40,7 @@ export default function Products() {
             <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
               <div className="flex items-center gap-2">
                 <button
+                  // khi người màn hình dưới 1024px hiển thị moblie filter
                   className="lg:hidden flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-md text-sm font-medium hover:bg-gray-200 transition-colors"
                   onClick={() => setIsMobileFilterOpen(true)}
                 >
@@ -54,7 +55,7 @@ export default function Products() {
                   sản phẩm
                 </span>
               </div>
-              <div className="flex items-center gap-2">
+              {/* <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-500 hidden sm:inline">
                   Sắp xếp theo:
                 </span>
@@ -73,7 +74,7 @@ export default function Products() {
                   </select>
                   <ChevronDown className="w-4 h-4 text-gray-500 absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none" />
                 </div>
-              </div>
+              </div> */}
             </div>
             {/* Product Grid */}
             {data?.data && data?.data.length > 0 ? (
@@ -96,11 +97,12 @@ export default function Products() {
                 <button
                   onClick={() =>
                     setFilters({
-                      categories: [],
-                      priceRange: [0, 50000000],
-                      materials: [],
-                      sizes: [],
-                      colors: [],
+                      CategoryId: null,
+                      minPrice: 0,
+                      maxPrice: 8500000,
+                      Materials: null,
+                      Sizes: null,
+                      Colors: null,
                     })
                   }
                   className="text-orange-600 font-medium hover:underline"
@@ -126,19 +128,7 @@ export default function Products() {
                 onClick={() => setIsMobileFilterOpen(false)}
                 className="p-2 hover:bg-gray-100 rounded-full"
               >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <X className="w-5 h-5" />
               </button>
             </div>
             <FilterSidebar filters={filters} setFilters={setFilters} />

@@ -2,108 +2,44 @@ import React from "react";
 
 import { FilterX } from "lucide-react";
 import Checkbox from "../ui/checkbox";
+import type { FilterState } from "@/types/domain/product.type";
+import {
+  CATEGORIES,
+  COLOR_MAP,
+  COLORS,
+  MATERIALS,
+  SIZES,
+} from "@/constants/filter";
 
-export type Category =
-  | "Cửa gỗ"
-  | "Cửa kính"
-  | "Cửa thép"
-  | "Cửa cuốn"
-  | "Cửa nhôm";
-
-export type Material =
-  | "Gỗ tự nhiên"
-  | "Gỗ công nghiệp"
-  | "Nhôm"
-  | "Kính"
-  | "Thép";
-export type Size = "80x200cm" | "90x200cm" | "100x200cm" | "120x200cm";
-export type Color = "Trắng" | "Nâu" | "Đen" | "Xám" | "Tự nhiên";
-interface FilterState {
-  categories: Category[];
-  priceRange: [number, number];
-  materials: Material[];
-  sizes: Size[];
-  colors: Color[];
-}
 interface FilterSidebarProps {
   filters: FilterState;
   setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
   className?: string;
 }
-const CATEGORIES: Category[] = [
-  "Cửa gỗ",
-  "Cửa kính",
-  "Cửa thép",
-  "Cửa cuốn",
-  "Cửa nhôm",
-];
-const MATERIALS: Material[] = [
-  "Gỗ tự nhiên",
-  "Gỗ công nghiệp",
-  "Nhôm",
-  "Kính",
-  "Thép",
-];
-const SIZES: Size[] = ["80x200cm", "90x200cm", "100x200cm", "120x200cm"];
-const COLORS: Color[] = ["Trắng", "Nâu", "Đen", "Xám", "Tự nhiên"];
-const COLOR_MAP: Record<Color, string> = {
-  Trắng: "#FFFFFF",
-  Nâu: "#8B4513",
-  Đen: "#000000",
-  Xám: "#808080",
-  "Tự nhiên": "#D2B48C",
-};
+
 export function FilterSidebar({
   filters,
   setFilters,
   className = "",
 }: FilterSidebarProps) {
-  const handleCategoryChange = (category: Category) => {
-    setFilters((prev) => {
-      const newCategories = prev.categories.includes(category)
-        ? prev.categories.filter((c) => c !== category)
-        : [...prev.categories, category];
-      return { ...prev, categories: newCategories };
-    });
+  const handleToggleChange = <T extends keyof FilterState>(
+    key: T,
+    value: FilterState[T] // single value
+  ) => {
+    setFilters((prev) => ({
+      ...prev,
+      [key]: prev[key] === value ? null : value, // click lại thì bỏ chọn
+    }));
   };
-  const handleMaterialChange = (material: Material) => {
-    setFilters((prev) => {
-      const newMaterials = prev.materials.includes(material)
-        ? prev.materials.filter((m) => m !== material)
-        : [...prev.materials, material];
-      return { ...prev, materials: newMaterials };
-    });
-  };
-  const handleSizeChange = (size: Size) => {
-    setFilters((prev) => {
-      const newSizes = prev.sizes.includes(size)
-        ? prev.sizes.filter((s) => s !== size)
-        : [...prev.sizes, size];
-      return { ...prev, sizes: newSizes };
-    });
-  };
-  const handleColorChange = (color: Color) => {
-    setFilters((prev) => {
-      const newColors = prev.colors.includes(color)
-        ? prev.colors.filter((c) => c !== color)
-        : [...prev.colors, color];
-      return { ...prev, colors: newColors };
-    });
-  };
-  const handlePriceChange = (value: number, index: 0 | 1) => {
-    setFilters((prev) => {
-      const newRange: [number, number] = [...prev.priceRange];
-      newRange[index] = value;
-      return { ...prev, priceRange: newRange };
-    });
-  };
+
   const clearFilters = () => {
     setFilters({
-      categories: [],
-      priceRange: [0, 50000000],
-      materials: [],
-      sizes: [],
-      colors: [],
+      CategoryId: null,
+      minPrice: 0,
+      maxPrice: 8500000,
+      Materials: null,
+      Sizes: null,
+      Colors: null,
     });
   };
   const formatPrice = (price: number) => {
@@ -130,10 +66,10 @@ export function FilterSidebar({
         <div className="space-y-2">
           {CATEGORIES.map((cat) => (
             <Checkbox
-              key={cat}
-              label={cat}
-              checked={filters.categories.includes(cat)}
-              onChange={() => handleCategoryChange(cat)}
+              key={cat?.id}
+              label={cat?.label}
+              checked={filters.CategoryId === cat?.id}
+              onChange={() => handleToggleChange("CategoryId", cat?.id)}
             />
           ))}
         </div>
@@ -143,15 +79,15 @@ export function FilterSidebar({
         <h4 className="font-medium text-gray-900">Khoảng giá</h4>
         <div className="space-y-4">
           <div className="flex items-center justify-between text-sm text-gray-600">
-            <span>{formatPrice(filters.priceRange[0])}</span>
-            <span>{formatPrice(filters.priceRange[1])}</span>
+            <span>{formatPrice(filters.minPrice)}</span>
+            <span>{formatPrice(filters.maxPrice)}</span>
           </div>
           <div className="relative h-2 bg-gray-200 rounded-full">
             <div
               className="absolute h-full bg-orange-500 rounded-full"
               style={{
-                left: `${(filters.priceRange[0] / 50000000) * 100}%`,
-                right: `${100 - (filters.priceRange[1] / 50000000) * 100}%`,
+                left: `${(filters.minPrice / 50000000) * 100}%`,
+                right: `${100 - (filters.maxPrice / 50000000) * 100}%`,
               }}
             />
             <input
@@ -159,13 +95,13 @@ export function FilterSidebar({
               min="0"
               max="50000000"
               step="500000"
-              value={filters.priceRange[0]}
+              value={filters.minPrice}
               onChange={(e) => {
                 const val = Math.min(
                   parseInt(e.target.value),
-                  filters.priceRange[1] - 1000000
+                  filters.maxPrice - 1000000
                 );
-                handlePriceChange(val, 0);
+                handleToggleChange("minPrice", val);
               }}
               className="absolute w-full h-full opacity-0 cursor-pointer z-10"
             />
@@ -174,13 +110,13 @@ export function FilterSidebar({
               min="0"
               max="50000000"
               step="500000"
-              value={filters.priceRange[1]}
+              value={filters.maxPrice}
               onChange={(e) => {
                 const val = Math.max(
                   parseInt(e.target.value),
-                  filters.priceRange[0] + 1000000
+                  filters.minPrice + 1000000
                 );
-                handlePriceChange(val, 1);
+                handleToggleChange("maxPrice", val);
               }}
               className="absolute w-full h-full opacity-0 cursor-pointer z-10"
             />
@@ -195,8 +131,8 @@ export function FilterSidebar({
             <Checkbox
               key={mat}
               label={mat}
-              checked={filters.materials.includes(mat)}
-              onChange={() => handleMaterialChange(mat)}
+              checked={filters.Materials === mat}
+              onChange={() => handleToggleChange("Materials", mat)}
             />
           ))}
         </div>
@@ -208,9 +144,9 @@ export function FilterSidebar({
           {SIZES.map((size) => (
             <button
               key={size}
-              onClick={() => handleSizeChange(size)}
+              onClick={() => handleToggleChange("Sizes", size)}
               className={`px-3 py-1.5 text-xs rounded border transition-colors ${
-                filters.sizes.includes(size)
+                filters.Sizes === size
                   ? "bg-orange-600 text-white border-orange-600"
                   : "bg-white text-gray-700 border-gray-300 hover:border-orange-500"
               }`}
@@ -227,9 +163,9 @@ export function FilterSidebar({
           {COLORS.map((color) => (
             <button
               key={color}
-              onClick={() => handleColorChange(color)}
+              onClick={() => handleToggleChange("Colors", color)}
               className={`w-8 h-8 rounded-full border shadow-sm relative transition-transform hover:scale-110 ${
-                filters.colors.includes(color)
+                filters.Colors === color
                   ? "ring-2 ring-offset-2 ring-orange-500"
                   : ""
               }`}
