@@ -1,9 +1,10 @@
-import type { Product } from "@/types/api/product.type";
+import type { Product, SuccessResponse } from "@/types/api/product.type";
+import type { UseProductsParams } from "@/types/domain/product.type";
 import http from "@/utils/http";
 
 const productApis = {
-  getAllProducts() {
-    return http.get<Product[]>("/products");
+  getAllProducts(query: UseProductsParams) {
+    return http.get<SuccessResponse<Product[]>>("/products", { params: query });
   },
 };
 export default productApis;

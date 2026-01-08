@@ -10,11 +10,12 @@ import {
   Wrench,
 } from "lucide-react";
 import type { Product } from "@/types/api/product.type";
-import type { Color } from "@/components/FilterSideBar/FilterSideBar";
+
 import Image360Viewer from "@/components/ProductImage";
 import Button from "@/components/ui/button";
 import ProductSpecs from "@/components/ProductSpecs/ProductSpecs";
 import RelatedProducts from "@/components/RelatedProducts/RelatedProducts";
+import type { Color } from "@/types/domain/product.type";
 interface ProductDetailProps {
   product: Product;
   allProducts: Product[];

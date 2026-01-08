@@ -3,12 +3,7 @@ import { Link } from "react-router-dom";
 
 import Button from "@/components/ui/button";
 
-import ProductCard from "@/components/ProductCard";
-import { useAllProducts } from "@/hooks/productHooks";
-
 export default function Home() {
-  const { data } = useAllProducts();
-  const featuredProducts = data?.data?.slice(0, 4) || [];
   const features = [
     {
       icon: <ShieldCheck className="h-8 w-8 text-amber-700" />,
@@ -178,12 +173,12 @@ export default function Home() {
               Xem tất cả <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </div>
-
+          {/* 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {featuredProducts.map((product) => (
               <ProductCard key={product.ProductId} product={product} />
             ))}
-          </div>
+          </div> */}
 
           <div className="mt-8 text-center sm:hidden">
             <Link to="/products">

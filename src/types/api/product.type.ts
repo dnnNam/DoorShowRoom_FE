@@ -23,3 +23,8 @@ export interface Product {
   ProductImages: ProductImage[];
   Categories: Category;
 }
+
+export interface SuccessResponse<T> {
+  data: T;
+  message: string;
+}
