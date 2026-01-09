@@ -10,6 +10,9 @@ class Http {
       headers: {
         "Content-Type": "application/json",
       },
+      paramsSerializer: {
+        indexes: null,
+      },
     });
   }
 }
