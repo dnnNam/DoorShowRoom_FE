@@ -3,13 +3,8 @@ import React from "react";
 import { FilterX } from "lucide-react";
 import Checkbox from "../ui/checkbox";
 import type { FilterState } from "@/types/domain/product.type";
-import {
-  CATEGORIES,
-  COLOR_MAP,
-  COLORS,
-  MATERIALS,
-  SIZES,
-} from "@/constants/filter";
+import { CATEGORIES, COLOR_MAP, COLORS, MATERIALS } from "@/constants/filter";
+import { toggleFilterItem } from "@/utils/filter.helper";
 
 interface FilterSidebarProps {
   filters: FilterState;
@@ -22,24 +17,37 @@ export function FilterSidebar({
   setFilters,
   className = "",
 }: FilterSidebarProps) {
-  const handleToggleChange = <T extends keyof FilterState>(
+  const handleToggleChange = <
+    T extends keyof Pick<FilterState, "CategoryId" | "Materials" | "Colors">
+  >(
     key: T,
-    value: FilterState[T] // single value
+    value: FilterState[T][number] // Lấy type của phần tử trong array
   ) => {
+    setFilters((prev) => {
+      const currentValue = prev[key] as FilterState[T][number][];
+      const updatedValue = toggleFilterItem(currentValue, value);
+      return {
+        ...prev,
+        [key]: updatedValue,
+      };
+    });
+  };
+
+  const handlePriceChange = (key: "minPrice" | "maxPrice", value: number) => {
     setFilters((prev) => ({
       ...prev,
-      [key]: prev[key] === value ? null : value, // click lại thì bỏ chọn
+      [key]: value,
     }));
   };
 
   const clearFilters = () => {
     setFilters({
-      CategoryId: null,
+      CategoryId: [],
       minPrice: 0,
       maxPrice: 8500000,
-      Materials: null,
-      Sizes: null,
-      Colors: null,
+      Materials: [],
+
+      Colors: [],
     });
   };
   const formatPrice = (price: number) => {
@@ -68,7 +76,7 @@ export function FilterSidebar({
             <Checkbox
               key={cat?.id}
               label={cat?.label}
-              checked={filters.CategoryId === cat?.id}
+              checked={filters.CategoryId.includes(cat?.id)}
               onChange={() => handleToggleChange("CategoryId", cat?.id)}
             />
           ))}
@@ -101,7 +109,7 @@ export function FilterSidebar({
                   parseInt(e.target.value),
                   filters.maxPrice - 1000000
                 );
-                handleToggleChange("minPrice", val);
+                handlePriceChange("minPrice", val);
               }}
               className="absolute w-full h-full opacity-0 cursor-pointer z-10"
             />
@@ -116,7 +124,7 @@ export function FilterSidebar({
                   parseInt(e.target.value),
                   filters.minPrice + 1000000
                 );
-                handleToggleChange("maxPrice", val);
+                handlePriceChange("maxPrice", val);
               }}
               className="absolute w-full h-full opacity-0 cursor-pointer z-10"
             />
@@ -131,31 +139,13 @@ export function FilterSidebar({
             <Checkbox
               key={mat}
               label={mat}
-              checked={filters.Materials === mat}
+              checked={filters.Materials.includes(mat)}
               onChange={() => handleToggleChange("Materials", mat)}
             />
           ))}
         </div>
       </div>
-      {/* Sizes */}
-      <div className="space-y-3">
-        <h4 className="font-medium text-gray-900">Kích thước</h4>
-        <div className="flex flex-wrap gap-2">
-          {SIZES.map((size) => (
-            <button
-              key={size}
-              onClick={() => handleToggleChange("Sizes", size)}
-              className={`px-3 py-1.5 text-xs rounded border transition-colors ${
-                filters.Sizes === size
-                  ? "bg-orange-600 text-white border-orange-600"
-                  : "bg-white text-gray-700 border-gray-300 hover:border-orange-500"
-              }`}
-            >
-              {size}
-            </button>
-          ))}
-        </div>
-      </div>
+
       {/* Colors */}
       <div className="space-y-3">
         <h4 className="font-medium text-gray-900">Màu sắc</h4>
@@ -165,7 +155,7 @@ export function FilterSidebar({
               key={color}
               onClick={() => handleToggleChange("Colors", color)}
               className={`w-8 h-8 rounded-full border shadow-sm relative transition-transform hover:scale-110 ${
-                filters.Colors === color
+                filters.Colors.includes(color)
                   ? "ring-2 ring-offset-2 ring-orange-500"
                   : ""
               }`}

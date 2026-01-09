@@ -12,17 +12,17 @@ export default function Products() {
   // const [sortOption, setSortOption] = useState<SortOption>("newest");
 
   const [filters, setFilters] = useState<FilterState>({
-    CategoryId: null,
+    CategoryId: [],
     minPrice: 0,
     maxPrice: 8500000,
-    Materials: null,
-    Sizes: null,
-    Colors: null,
+    Materials: [],
+
+    Colors: [],
   });
-  console.log("filters nè: ", filters);
+  // console.log("filters nè: ", filters);
 
   const { data } = useAllProducts(filters);
-  console.log("data từ API: ", data?.data);
+  // console.log("data từ API: ", data?.data);
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-900">
@@ -97,12 +97,12 @@ export default function Products() {
                 <button
                   onClick={() =>
                     setFilters({
-                      CategoryId: null,
+                      CategoryId: [],
                       minPrice: 0,
                       maxPrice: 8500000,
-                      Materials: null,
-                      Sizes: null,
-                      Colors: null,
+                      Materials: [],
+
+                      Colors: [],
                     })
                   }
                   className="text-orange-600 font-medium hover:underline"
