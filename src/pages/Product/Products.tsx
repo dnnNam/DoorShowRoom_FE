@@ -2,22 +2,21 @@ import FilterSidebar from "@/components/FilterSideBar";
 import ProductCard from "@/components/ProductCard";
 
 import { useAllProducts } from "@/hooks/productHooks";
-import type { FilterState } from "@/types/domain/product.type";
+import type { FilterState, SortOption } from "@/types/domain/product.type";
 
-import { SlidersHorizontal, X } from "lucide-react";
+import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
 import { useState } from "react";
 
 export default function Products() {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
-  // const [sortOption, setSortOption] = useState<SortOption>("newest");
 
   const [filters, setFilters] = useState<FilterState>({
     CategoryId: [],
     minPrice: 0,
     maxPrice: 8500000,
     Materials: [],
-
     Colors: [],
+    OrderBy: "",
   });
   // console.log("filters nè: ", filters);
 
@@ -55,26 +54,29 @@ export default function Products() {
                   sản phẩm
                 </span>
               </div>
-              {/* <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-500 hidden sm:inline">
                   Sắp xếp theo:
                 </span>
                 <div className="relative group">
                   <select
-                    value={sortOption}
+                    value={filters.OrderBy}
                     onChange={(e) =>
-                      setSortOption(e.target.value as SortOption)
+                      setFilters((prev) => ({
+                        ...prev,
+                        OrderBy: e.target.value as SortOption,
+                      }))
                     }
                     className="appearance-none bg-gray-50 border border-gray-200 text-gray-700 py-2 pl-4 pr-10 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-orange-500 cursor-pointer hover:bg-gray-100 transition-colors"
                   >
-                    <option value="newest">Mới nhất</option>
-                    <option value="bestseller">Bán chạy nhất</option>
-                    <option value="price-asc">Giá tăng dần</option>
-                    <option value="price-desc">Giá giảm dần</option>
+                    {/* <option value="newest">Mới nhất</option>
+                    <option value="bestseller">Bán chạy nhất</option> */}
+                    <option value="asc">Giá tăng dần</option>
+                    <option value="desc">Giá giảm dần</option>
                   </select>
                   <ChevronDown className="w-4 h-4 text-gray-500 absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none" />
                 </div>
-              </div> */}
+              </div>
             </div>
             {/* Product Grid */}
             {data?.data && data?.data.length > 0 ? (
@@ -101,8 +103,8 @@ export default function Products() {
                       minPrice: 0,
                       maxPrice: 8500000,
                       Materials: [],
-
                       Colors: [],
+                      OrderBy: "",
                     })
                   }
                   className="text-orange-600 font-medium hover:underline"

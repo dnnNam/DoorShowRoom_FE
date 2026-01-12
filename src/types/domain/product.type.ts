@@ -6,6 +6,7 @@ export interface FilterState {
   maxPrice: number;
   Materials: string[];
   Colors: string[];
+  OrderBy: string;
 }
 
 export interface UseProductsParams extends FilterState {
@@ -22,3 +23,5 @@ export type Material =
   | "Thép";
 
 export type Color = "Trắng" | "Nâu" | "Đen" | "Xám" | "Tự nhiên";
+
+export type SortOption = "asc" | "desc" | "newest" | "bestseller";
