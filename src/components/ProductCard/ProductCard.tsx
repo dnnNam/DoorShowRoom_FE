@@ -1,6 +1,7 @@
 import { Eye, ShoppingCart } from "lucide-react";
 import Button from "../ui/button";
 import type { Product } from "@/types/api/product.type";
+import { isNewProduct } from "@/utils/products.helper";
 
 export function ProductCard({ product }: { product: Product }) {
   return (
@@ -11,20 +12,20 @@ export function ProductCard({ product }: { product: Product }) {
           alt="Product Image"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
-        {/* {(product.isNew || product.isBestSeller) && (
+        {(isNewProduct(product.CreatedAt) || product.IsBestSeller) && (
           <div className="absolute top-2 left-2 flex flex-col gap-1">
-            {product.isNew && (
+            {isNewProduct(product.CreatedAt) && (
               <span className="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">
                 MỚI
               </span>
             )}
-            {product.isBestSeller && (
+            {product.IsBestSeller && (
               <span className="bg-orange-600 text-white text-xs font-bold px-2 py-1 rounded">
                 HOT
               </span>
             )}
           </div>
-        )} */}
+        )}
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
           <Button
             variant="secondary"

@@ -4,7 +4,7 @@ import { FilterX } from "lucide-react";
 import Checkbox from "../ui/checkbox";
 import type { FilterState } from "@/types/domain/product.type";
 import { CATEGORIES, COLOR_MAP, COLORS, MATERIALS } from "@/constants/filter";
-import { toggleFilterItem } from "@/utils/filter.helper";
+import { toggleFilterItem } from "@/utils/products.helper";
 
 interface FilterSidebarProps {
   filters: FilterState;
@@ -46,8 +46,9 @@ export function FilterSidebar({
       minPrice: 0,
       maxPrice: 8500000,
       Materials: [],
-
       Colors: [],
+      OrderBy: "",
+      Sort: "",
     });
   };
   const formatPrice = (price: number) => {
