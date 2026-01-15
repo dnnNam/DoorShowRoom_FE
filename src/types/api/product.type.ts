@@ -19,6 +19,7 @@ export interface Product {
   Description: string;
   IsFeatured: boolean;
   IsActive: boolean;
+  IsBestSeller: boolean;
   CreatedAt: string;
   ProductImages: ProductImage[];
   Categories: Category;

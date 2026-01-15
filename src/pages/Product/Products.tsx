@@ -2,7 +2,7 @@ import FilterSidebar from "@/components/FilterSideBar";
 import ProductCard from "@/components/ProductCard";
 
 import { useAllProducts } from "@/hooks/productHooks";
-import type { FilterState, SortOption } from "@/types/domain/product.type";
+import type { FilterState, OrderByOption } from "@/types/domain/product.type";
 
 import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
 import { useState } from "react";
@@ -17,6 +17,7 @@ export default function Products() {
     Materials: [],
     Colors: [],
     OrderBy: "",
+    Sort: "",
   });
   // console.log("filters nè: ", filters);
 
@@ -60,17 +61,28 @@ export default function Products() {
                 </span>
                 <div className="relative group">
                   <select
-                    value={filters.OrderBy}
-                    onChange={(e) =>
-                      setFilters((prev) => ({
-                        ...prev,
-                        OrderBy: e.target.value as SortOption,
-                      }))
-                    }
+                    value={filters.OrderBy || filters.Sort}
+                    onChange={(e) => {
+                      const value = e.target.value;
+
+                      if (value === "newest" || value === "best_selling") {
+                        setFilters((prev) => ({
+                          ...prev,
+                          Sort: value,
+                          OrderBy: "",
+                        }));
+                      } else {
+                        setFilters((prev) => ({
+                          ...prev,
+                          OrderBy: value as OrderByOption,
+                          Sort: "",
+                        }));
+                      }
+                    }}
                     className="appearance-none bg-gray-50 border border-gray-200 text-gray-700 py-2 pl-4 pr-10 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-orange-500 cursor-pointer hover:bg-gray-100 transition-colors"
                   >
-                    {/* <option value="newest">Mới nhất</option>
-                    <option value="bestseller">Bán chạy nhất</option> */}
+                    <option value="newest">Mới nhất</option>
+                    <option value="best_selling">Bán chạy nhất</option>
                     <option value="asc">Giá tăng dần</option>
                     <option value="desc">Giá giảm dần</option>
                   </select>
@@ -105,6 +117,7 @@ export default function Products() {
                       Materials: [],
                       Colors: [],
                       OrderBy: "",
+                      Sort: "",
                     })
                   }
                   className="text-orange-600 font-medium hover:underline"
