@@ -27,3 +27,21 @@ export type Color = "Trắng" | "Nâu" | "Đen" | "Xám" | "Tự nhiên";
 
 export type SortOption = "newest" | "best_selling" | "";
 export type OrderByOption = "asc" | "desc" | "";
+
+export interface ProductFilterStore {
+  Keyword: string;
+  filters: FilterState;
+  //  Partial<FilterState> cho phép chỉ truyền một phần của FilterState
+  setFilters: (filters: Partial<FilterState>) => void;
+  setKeyword: (keyword: string) => void;
+  resetAll: () => void;
+
+  toggleArrayFilter: <
+    T extends keyof Pick<FilterState, "CategoryId" | "Materials" | "Colors">,
+  >(
+    key: T,
+    value: FilterState[T][number],
+  ) => void;
+
+  setPrice: (key: "minPrice" | "maxPrice", value: number) => void;
+}
