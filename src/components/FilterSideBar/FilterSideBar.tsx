@@ -4,11 +4,12 @@ import { FilterX } from "lucide-react";
 import Checkbox from "../ui/checkbox";
 import type { FilterState } from "@/types/domain/product.type";
 import { CATEGORIES, COLOR_MAP, COLORS, MATERIALS } from "@/constants/filter";
-import { toggleFilterItem } from "@/utils/products.helper";
+
+import { useProductFilterStore } from "@/stores/productStore";
 
 interface FilterSidebarProps {
   filters: FilterState;
-  setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
+  setFilters: (filters: Partial<FilterState>) => void;
   className?: string;
 }
 
@@ -17,28 +18,7 @@ export function FilterSidebar({
   setFilters,
   className = "",
 }: FilterSidebarProps) {
-  const handleToggleChange = <
-    T extends keyof Pick<FilterState, "CategoryId" | "Materials" | "Colors">
-  >(
-    key: T,
-    value: FilterState[T][number] // Lấy type của phần tử trong array
-  ) => {
-    setFilters((prev) => {
-      const currentValue = prev[key] as FilterState[T][number][];
-      const updatedValue = toggleFilterItem(currentValue, value);
-      return {
-        ...prev,
-        [key]: updatedValue,
-      };
-    });
-  };
-
-  const handlePriceChange = (key: "minPrice" | "maxPrice", value: number) => {
-    setFilters((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-  };
+  const { toggleArrayFilter, setPrice } = useProductFilterStore();
 
   const clearFilters = () => {
     setFilters({
@@ -78,7 +58,7 @@ export function FilterSidebar({
               key={cat?.id}
               label={cat?.label}
               checked={filters.CategoryId.includes(cat?.id)}
-              onChange={() => handleToggleChange("CategoryId", cat?.id)}
+              onChange={() => toggleArrayFilter("CategoryId", cat?.id)}
             />
           ))}
         </div>
@@ -108,9 +88,9 @@ export function FilterSidebar({
               onChange={(e) => {
                 const val = Math.min(
                   parseInt(e.target.value),
-                  filters.maxPrice - 1000000
+                  filters.maxPrice - 1000000,
                 );
-                handlePriceChange("minPrice", val);
+                setPrice("minPrice", val);
               }}
               className="absolute w-full h-full opacity-0 cursor-pointer z-10"
             />
@@ -123,9 +103,9 @@ export function FilterSidebar({
               onChange={(e) => {
                 const val = Math.max(
                   parseInt(e.target.value),
-                  filters.minPrice + 1000000
+                  filters.minPrice + 1000000,
                 );
-                handlePriceChange("maxPrice", val);
+                setPrice("maxPrice", val);
               }}
               className="absolute w-full h-full opacity-0 cursor-pointer z-10"
             />
@@ -141,7 +121,7 @@ export function FilterSidebar({
               key={mat}
               label={mat}
               checked={filters.Materials.includes(mat)}
-              onChange={() => handleToggleChange("Materials", mat)}
+              onChange={() => toggleArrayFilter("Materials", mat)}
             />
           ))}
         </div>
@@ -154,7 +134,7 @@ export function FilterSidebar({
           {COLORS.map((color) => (
             <button
               key={color}
-              onClick={() => handleToggleChange("Colors", color)}
+              onClick={() => toggleArrayFilter("Colors", color)}
               className={`w-8 h-8 rounded-full border shadow-sm relative transition-transform hover:scale-110 ${
                 filters.Colors.includes(color)
                   ? "ring-2 ring-offset-2 ring-orange-500"

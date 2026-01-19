@@ -2,7 +2,8 @@ import FilterSidebar from "@/components/FilterSideBar";
 import ProductCard from "@/components/ProductCard";
 
 import { useAllProducts } from "@/hooks/productHooks";
-import type { FilterState, OrderByOption } from "@/types/domain/product.type";
+import { useProductFilterStore } from "@/stores/productStore";
+import type { OrderByOption } from "@/types/domain/product.type";
 
 import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
 import { useState } from "react";
@@ -10,17 +11,8 @@ import { useState } from "react";
 export default function Products() {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
-  const [filters, setFilters] = useState<FilterState>({
-    CategoryId: [],
-    minPrice: 0,
-    maxPrice: 8500000,
-    Materials: [],
-    Colors: [],
-    OrderBy: "",
-    Sort: "",
-  });
+  const { filters, setFilters } = useProductFilterStore();
   // console.log("filters nè: ", filters);
-
   const { data } = useAllProducts(filters);
   // console.log("data từ API: ", data?.data);
 
@@ -66,17 +58,12 @@ export default function Products() {
                       const value = e.target.value;
 
                       if (value === "newest" || value === "best_selling") {
-                        setFilters((prev) => ({
-                          ...prev,
-                          Sort: value,
-                          OrderBy: "",
-                        }));
+                        setFilters({ Sort: value, OrderBy: "" });
                       } else {
-                        setFilters((prev) => ({
-                          ...prev,
+                        setFilters({
                           OrderBy: value as OrderByOption,
                           Sort: "",
-                        }));
+                        });
                       }
                     }}
                     className="appearance-none bg-gray-50 border border-gray-200 text-gray-700 py-2 pl-4 pr-10 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-orange-500 cursor-pointer hover:bg-gray-100 transition-colors"
