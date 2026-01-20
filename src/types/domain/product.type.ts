@@ -1,4 +1,5 @@
 import type { CATEGORY } from "@/constants/enum";
+import type { Product } from "../api/product.type";
 
 export interface FilterState {
   CategoryId: number[];
@@ -10,8 +11,9 @@ export interface FilterState {
   Sort: SortOption;
 }
 
-export interface UseProductsParams extends FilterState {
+export interface UseProductsParams extends Partial<FilterState> {
   page?: number;
+  Keyword?: string;
 }
 
 export type CategoryId = (typeof CATEGORY)[keyof typeof CATEGORY];
@@ -27,21 +29,8 @@ export type Color = "Trắng" | "Nâu" | "Đen" | "Xám" | "Tự nhiên";
 
 export type SortOption = "newest" | "best_selling" | "";
 export type OrderByOption = "asc" | "desc" | "";
-
-export interface ProductFilterStore {
-  Keyword: string;
-  filters: FilterState;
-  //  Partial<FilterState> cho phép chỉ truyền một phần của FilterState
-  setFilters: (filters: Partial<FilterState>) => void;
-  setKeyword: (keyword: string) => void;
-  resetAll: () => void;
-
-  toggleArrayFilter: <
-    T extends keyof Pick<FilterState, "CategoryId" | "Materials" | "Colors">,
-  >(
-    key: T,
-    value: FilterState[T][number],
-  ) => void;
-
-  setPrice: (key: "minPrice" | "maxPrice", value: number) => void;
+export interface ProductStore {
+  products: Product[];
+  setProducts: (products: Product[]) => void;
+  clearProducts: () => void;
 }
