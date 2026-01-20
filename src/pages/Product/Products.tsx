@@ -2,18 +2,29 @@ import FilterSidebar from "@/components/FilterSideBar";
 import ProductCard from "@/components/ProductCard";
 
 import { useAllProducts } from "@/hooks/productHooks";
-import { useProductFilterStore } from "@/stores/productStore";
-import type { OrderByOption } from "@/types/domain/product.type";
+import { useProductStore } from "@/stores/productStore";
+
+import type { FilterState, OrderByOption } from "@/types/domain/product.type";
 
 import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
 import { useState } from "react";
 
 export default function Products() {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
-
-  const { filters, setFilters } = useProductFilterStore();
+  const [filters, setFilters] = useState<FilterState>({
+    CategoryId: [],
+    minPrice: 0,
+    maxPrice: 8500000,
+    Materials: [],
+    Colors: [],
+    OrderBy: "",
+    Sort: "",
+  });
   // console.log("filters nè: ", filters);
-  const { data } = useAllProducts(filters);
+  // gọi APi lấy products
+  useAllProducts(filters);
+  // lấy data từ store
+  const products = useProductStore((state) => state.products);
   // console.log("data từ API: ", data?.data);
 
   return (
@@ -58,12 +69,17 @@ export default function Products() {
                       const value = e.target.value;
 
                       if (value === "newest" || value === "best_selling") {
-                        setFilters({ Sort: value, OrderBy: "" });
+                        setFilters((prev) => ({
+                          ...prev,
+                          Sort: value,
+                          OrderBy: "",
+                        }));
                       } else {
-                        setFilters({
+                        setFilters((prev) => ({
+                          ...prev,
                           OrderBy: value as OrderByOption,
                           Sort: "",
-                        });
+                        }));
                       }
                     }}
                     className="appearance-none bg-gray-50 border border-gray-200 text-gray-700 py-2 pl-4 pr-10 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-orange-500 cursor-pointer hover:bg-gray-100 transition-colors"
@@ -78,9 +94,9 @@ export default function Products() {
               </div>
             </div>
             {/* Product Grid */}
-            {data?.data && data?.data.length > 0 ? (
+            {products && products.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {data?.data.map((product) => (
+                {products.map((product) => (
                   <ProductCard key={product.ProductId} product={product} />
                 ))}
               </div>
