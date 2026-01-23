@@ -12,7 +12,7 @@ export interface Product {
   ProductId: number;
   ProductName: string;
   CategoryId: number;
-  Price: string;
+  Price: number;
   Material: string;
   Color: string;
   Size: string;
@@ -23,6 +23,7 @@ export interface Product {
   CreatedAt: string;
   ProductImages: ProductImage[];
   Categories: Category;
+  Slug: string;
 }
 
 export interface SuccessResponse<T> {

@@ -7,5 +7,9 @@ const productApis = {
   getAllProducts(query: UseProductsParams) {
     return http.get<SuccessResponse<Product[]>>("/products", { params: query });
   },
+
+  getProductById(productId: number) {
+    return http.get<SuccessResponse<Product>>(`/products/${productId}`);
+  },
 };
 export default productApis;
