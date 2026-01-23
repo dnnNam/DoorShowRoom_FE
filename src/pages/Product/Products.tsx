@@ -25,7 +25,7 @@ export default function Products() {
   useAllProducts(filters);
   // lấy data từ store
   const products = useProductStore((state) => state.products);
-  // console.log("data từ API: ", data?.data);
+  console.log("data từ API: ", products);
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-900">

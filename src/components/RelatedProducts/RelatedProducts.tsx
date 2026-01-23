@@ -1,5 +1,4 @@
 import type { Product } from "@/types/api/product.type";
-import React from "react";
 import ProductCard from "../ProductCard";
 
 interface RelatedProductsProps {
@@ -16,11 +15,12 @@ export default function RelatedProducts({
   const relatedProducts = allProducts
     .filter(
       (p) =>
-        p?.Categories?.CategoryName ===
+        p.Categories?.CategoryName ===
           currentProduct.Categories?.CategoryName &&
-        p.ProductId !== currentProduct.ProductId
+        p.ProductId !== currentProduct.ProductId,
     )
     .slice(0, 4);
+
   if (relatedProducts.length === 0) return null;
   return (
     <div className="mt-16">
@@ -32,8 +32,8 @@ export default function RelatedProducts({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {relatedProducts.map((product) => (
           <div
-            key={product?.ProductId}
-            onClick={() => onProductClick(product?.ProductId.toString() || "")}
+            key={product.ProductId}
+            onClick={() => onProductClick(String(product.ProductId))}
             className="cursor-pointer"
           >
             <ProductCard product={product} />

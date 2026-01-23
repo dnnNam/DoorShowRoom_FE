@@ -7,7 +7,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 export const useAllProducts = (params: UseProductsParams) => {
-  console.log("param nè: ", params);
   const setProducts = useProductStore((s) => s.setProducts);
   const query = useQuery({
     queryKey: ["products", params],

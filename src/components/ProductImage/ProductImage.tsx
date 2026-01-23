@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Rotate3d, ZoomIn, Play, Pause, MousePointer2 } from "lucide-react";
 
 interface Image360ViewerProps {
@@ -34,29 +34,31 @@ export default function Image360Viewer({ src, alt }: Image360ViewerProps) {
     setStartX(e.clientX);
     setIsAutoRotating(false);
   };
+
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDragging) return;
-
     const deltaX = e.clientX - startX;
     setRotation((prev) => (prev + deltaX * 0.5) % 360);
     setStartX(e.clientX);
   };
+
   const handleMouseUp = () => {
     setIsDragging(false);
   };
+
   const handleTouchStart = (e: React.TouchEvent) => {
     setIsDragging(true);
     setStartX(e.touches[0].clientX);
     setIsAutoRotating(false);
   };
+
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isDragging) return;
-
     const deltaX = e.touches[0].clientX - startX;
     setRotation((prev) => (prev + deltaX * 0.5) % 360);
     setStartX(e.touches[0].clientX);
   };
-  const toggleAutoRotate = () => setIsAutoRotating(!isAutoRotating);
+
   return (
     <div className="space-y-4">
       <div
@@ -131,7 +133,7 @@ export default function Image360Viewer({ src, alt }: Image360ViewerProps) {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              toggleAutoRotate();
+              setIsAutoRotating(!isAutoRotating);
             }}
             className="p-2 bg-white rounded-full shadow-md hover:bg-gray-50 text-gray-700 transition-colors"
             title={isAutoRotating ? "Dừng xoay" : "Tự động xoay"}

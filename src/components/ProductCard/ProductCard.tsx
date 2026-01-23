@@ -2,8 +2,13 @@ import { Eye, ShoppingCart } from "lucide-react";
 import Button from "../ui/button";
 import type { Product } from "@/types/api/product.type";
 import { isNewProduct } from "@/utils/products.helper";
+import { useNavigate } from "react-router-dom";
 
 export function ProductCard({ product }: { product: Product }) {
+  const navigate = useNavigate();
+  const handleNavigateToProductDetail = () => {
+    navigate(`/products/${product.ProductId}-${product.Slug}`);
+  };
   return (
     <div className="group bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col h-full">
       <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
@@ -30,6 +35,7 @@ export function ProductCard({ product }: { product: Product }) {
           <Button
             variant="secondary"
             size="sm"
+            onClick={handleNavigateToProductDetail}
             className="translate-y-4 group-hover:translate-y-0 transition-transform duration-300"
           >
             <Eye className="w-4 h-4 mr-1" /> Xem nhanh
@@ -54,7 +60,12 @@ export function ProductCard({ product }: { product: Product }) {
             </span>
           </div>
 
-          <Button variant="primary" fullWidth className="group/btn">
+          <Button
+            variant="primary"
+            fullWidth
+            className="group/btn"
+            onClick={handleNavigateToProductDetail}
+          >
             <span className="mr-2">Chi tiết</span>
             <ShoppingCart className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
           </Button>
