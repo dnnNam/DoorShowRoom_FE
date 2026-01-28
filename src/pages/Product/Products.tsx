@@ -1,10 +1,10 @@
-import FilterSidebar from "@/components/FilterSideBar";
-import ProductCard from "@/components/ProductCard";
+import FilterSidebar from "~/components/FilterSideBar";
+import ProductCard from "~/components/ProductCard";
 
-import { useAllProducts } from "@/hooks/productHooks";
-import { useProductStore } from "@/stores/productStore";
+import { useAllProducts } from "~/hooks/productHooks";
+import { useProductStore } from "~/stores/productStore";
 
-import type { FilterState, OrderByOption } from "@/types/domain/product.type";
+import type { FilterState, OrderByOption } from "~/types/domain/product.type";
 
 import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
 import { useState } from "react";

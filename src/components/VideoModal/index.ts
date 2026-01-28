@@ -1,2 +1,2 @@
-import VideoModal from "./VideoModal";
+import VideoModal from "~/components/VideoModal/VideoModal";
 export default VideoModal;

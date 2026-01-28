@@ -1,7 +1,7 @@
-import productApis from "@/apis/products.apis";
-import { defaultParams } from "@/constants/filter";
-import { useProductStore } from "@/stores/productStore";
-import type { UseProductsParams } from "@/types/domain/product.type";
+import productApis from "~/apis/products.apis";
+import { defaultParams } from "~/constants/filter";
+import { useProductStore } from "~/stores/productStore";
+import type { UseProductsParams } from "~/types/domain/product.type";
 
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";

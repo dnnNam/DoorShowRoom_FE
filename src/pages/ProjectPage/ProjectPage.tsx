@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Play, MapPin, Calendar } from "lucide-react";
-import VideoModal from "@/components/VideoModal";
+import VideoModal from "~/components/VideoModal";
 
 interface Project {
   id: string;

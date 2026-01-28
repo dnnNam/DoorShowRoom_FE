@@ -1,4 +1,4 @@
-import productApis from "@/apis/products.apis";
+import productApis from "~/apis/products.apis";
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowLeft,
