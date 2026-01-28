@@ -26,7 +26,23 @@ export interface Product {
   Slug: string;
 }
 
+export interface Contact {
+  ContactId: number;
+  CreatedAt: string;
+  Email: string;
+  FullName: string;
+  Message: string;
+  Phone: string;
+}
+
 export interface SuccessResponse<T> {
   data: T;
+  message: string;
+}
+
+export interface ContactInputForms {
+  fullName: string;
+  phone: string;
+  email: string;
   message: string;
 }
