@@ -1,5 +1,5 @@
-import type { ContactInputForms } from "@/types/api/product.type";
-import http from "@/utils/http";
+import type { ContactInputForms } from "~/types/api/product.type";
+import http from "~/utils/http";
 
 const contactApis = {
   sendContactForm(data: ContactInputForms) {

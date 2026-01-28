@@ -1,11 +1,11 @@
-import HomeLayouts from "@/layouts/Home";
-import About from "@/pages/About";
-import Contact from "@/pages/Contact/Contact";
-import Home from "@/pages/Home";
-import PricingPage from "@/pages/PricingPage/PricingPage";
-import Products from "@/pages/Product";
-import ProjectPage from "@/pages/ProjectPage/ProjectPage";
-import ProductsDetail from "../pages/ProductDetails/ProductDetails";
+import HomeLayouts from "~/layouts/Home";
+import About from "~/pages/About";
+import Contact from "~/pages/Contact/Contact";
+import Home from "~/pages/Home";
+import PricingPage from "~/pages/PricingPage/PricingPage";
+import Products from "~/pages/Product";
+import ProjectPage from "~/pages/ProjectPage/ProjectPage";
+import ProductsDetail from "~/pages/ProductDetails/ProductDetails";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 export default function AppRoutes() {

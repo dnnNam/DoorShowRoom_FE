@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { MapPin, Phone, Mail, Clock, Send } from "lucide-react";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import type { ContactInputForms } from "@/types/api/product.type";
+import type { ContactInputForms } from "~/types/api/product.type";
 import { useMutation } from "@tanstack/react-query";
-import contactApis from "@/apis/contact.apis";
+import contactApis from "~/apis/contact.apis";
 export default function Contact() {
   const {
     register,

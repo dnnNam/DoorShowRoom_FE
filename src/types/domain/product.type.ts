@@ -1,5 +1,5 @@
-import type { CATEGORY } from "@/constants/enum";
-import type { Product } from "../api/product.type";
+import type { CATEGORY } from "~/constants/enum";
+import type { Product } from "~/types/api/product.type";
 
 export interface FilterState {
   CategoryId: number[];

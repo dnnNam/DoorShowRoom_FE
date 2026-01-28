@@ -1,10 +1,10 @@
 import React from "react";
 
 import { FilterX } from "lucide-react";
-import Checkbox from "../ui/checkbox";
-import type { FilterState } from "@/types/domain/product.type";
-import { CATEGORIES, COLOR_MAP, COLORS, MATERIALS } from "@/constants/filter";
-import { toggleFilterItem } from "@/utils/products.helper";
+import Checkbox from "~/components/ui/checkbox";
+import type { FilterState } from "~/types/domain/product.type";
+import { CATEGORIES, COLOR_MAP, COLORS, MATERIALS } from "~/constants/filter";
+import { toggleFilterItem } from "~/utils/products.helper";
 
 interface FilterSidebarProps {
   filters: FilterState;

@@ -1,10 +1,10 @@
 import { Menu, Phone } from "lucide-react";
-import Button from "../ui/button";
+import Button from "~/components/ui/button";
 import { NavLink, useMatch } from "react-router-dom";
 import { useState } from "react";
 import { useDebounce } from "use-debounce";
 
-import { useAllProducts } from "@/hooks/productHooks";
+import { useAllProducts } from "~/hooks/productHooks";
 export default function Header() {
   const navItems = [
     { to: "/", label: "Trang chủ" },

@@ -1,7 +1,7 @@
 import { Eye, ShoppingCart } from "lucide-react";
-import Button from "../ui/button";
-import type { Product } from "@/types/api/product.type";
-import { isNewProduct } from "@/utils/products.helper";
+import Button from "~/components/ui/button";
+import type { Product } from "~/types/api/product.type";
+import { isNewProduct } from "~/utils/products.helper";
 import { useNavigate } from "react-router-dom";
 
 export function ProductCard({ product }: { product: Product }) {
