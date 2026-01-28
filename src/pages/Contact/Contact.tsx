@@ -1,29 +1,32 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { MapPin, Phone, Mail, Clock, Send } from "lucide-react";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import type { ContactInputForms } from "@/types/api/product.type";
+import { useMutation } from "@tanstack/react-query";
+import contactApis from "@/apis/contact.apis";
 export default function Contact() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    message: "",
-  });
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ContactInputForms>();
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Simulate form submission
-    setIsSubmitted(true);
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({ name: "", email: "", phone: "", message: "" });
-    }, 3000);
-  };
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+
+  const mutation = useMutation({
+    mutationFn: contactApis.sendContactForm,
+    retry: false,
+    onSuccess: (data) => {
+      console.log("MUTATION SUCCESS DATA:", data);
+      setIsSubmitted(true);
+      reset();
+      setTimeout(() => setIsSubmitted(false), 3000);
+    },
+  });
+
+  const onSubmit: SubmitHandler<ContactInputForms> = (data) => {
+    console.log("Dữ liệu form:", data);
+    mutation.mutate(data);
   };
   return (
     <div className="bg-stone-50 min-h-screen py-12">
@@ -111,13 +114,18 @@ export default function Contact() {
               </h2>
 
               {isSubmitted ? (
-                <div className="bg-green-50 border border-green-200 text-green-700 p-4 rounded-lg flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  Cảm ơn bạn! Chúng tôi đã nhận được tin nhắn và sẽ phản hồi sớm
-                  nhất.
+                <div className="bg-green-50 border border-green-200 text-green-700 p-6 rounded-xl text-center space-y-2">
+                  <div className="mx-auto w-12 h-12 flex items-center justify-center rounded-full bg-green-100">
+                    <Send className="w-6 h-6 text-green-600" />
+                  </div>
+                  <h3 className="font-bold text-lg">Gửi thành công!</h3>
+                  <p className="text-sm">
+                    Cảm ơn bạn đã liên hệ với chúng tôi. <br />
+                    Đội ngũ tư vấn sẽ phản hồi trong thời gian sớm nhất.
+                  </p>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label
@@ -129,13 +137,29 @@ export default function Contact() {
                       <input
                         type="text"
                         id="name"
-                        name="name"
-                        required
-                        value={formData.name}
-                        onChange={handleChange}
-                        className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all"
+                        {...register("fullName", {
+                          required: "Vui lòng nhập họ tên",
+                          minLength: {
+                            value: 2,
+                            message: "Họ tên quá ngắn",
+                          },
+                          pattern: {
+                            value: /^[a-zA-ZÀ-ỹ\s]+$/,
+                            message: "Họ tên không hợp lệ",
+                          },
+                        })}
+                        className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none transition-all ${
+                          errors.fullName
+                            ? "border-red-500"
+                            : "border-stone-300"
+                        }`}
                         placeholder="Nguyễn Văn A"
                       />
+                      {errors.fullName && (
+                        <p className="text-red-500 text-xs mt-1">
+                          {errors.fullName.message}
+                        </p>
+                      )}
                     </div>
                     <div>
                       <label
@@ -147,13 +171,23 @@ export default function Contact() {
                       <input
                         type="tel"
                         id="phone"
-                        name="phone"
-                        required
-                        value={formData.phone}
-                        onChange={handleChange}
-                        className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all"
+                        {...register("phone", {
+                          required: "Vui lòng nhập số điện thoại",
+                          pattern: {
+                            value: /^(0[3|5|7|8|9])[0-9]{8}$/,
+                            message: "Số điện thoại không hợp lệ",
+                          },
+                        })}
+                        className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none transition-all ${
+                          errors.phone ? "border-red-500" : "border-stone-300"
+                        }`}
                         placeholder="090 xxx xxxx"
                       />
+                      {errors.phone && (
+                        <p className="text-red-500 text-xs mt-1">
+                          {errors.phone.message}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -167,13 +201,23 @@ export default function Contact() {
                     <input
                       type="email"
                       id="email"
-                      name="email"
-                      required
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all"
+                      {...register("email", {
+                        required: "Vui lòng nhập email",
+                        pattern: {
+                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                          message: "Email không đúng định dạng",
+                        },
+                      })}
+                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none transition-all ${
+                        errors.email ? "border-red-500" : "border-stone-300"
+                      }`}
                       placeholder="email@example.com"
                     />
+                    {errors.email && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.email.message}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -185,14 +229,20 @@ export default function Contact() {
                     </label>
                     <textarea
                       id="message"
-                      name="message"
                       rows={5}
-                      required
-                      value={formData.message}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all resize-none"
+                      {...register("message", {
+                        required: "Vui lòng nhập nội dung cần tư vấn",
+                      })}
+                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none transition-all resize-none ${
+                        errors.message ? "border-red-500" : "border-stone-300"
+                      }`}
                       placeholder="Tôi cần tư vấn về..."
                     ></textarea>
+                    {errors.message && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.message.message}
+                      </p>
+                    )}
                   </div>
 
                   <button
