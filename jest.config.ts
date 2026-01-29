@@ -9,6 +9,9 @@ const config: Config = {
     "^~/(.*)$": "<rootDir>/src/$1",
   }, // ánh xạ alias khi import module. Cannot find module '~/...' khi chạy test
   // $1 ý nghĩa là phần còn lại sau './src/...'
+
+  collectCoverage: true,
+  coverageReporters: ["text"],
 };
 
 export default config;
