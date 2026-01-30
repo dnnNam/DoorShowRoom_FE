@@ -8,6 +8,11 @@ export interface Category {
   CategoryName: string;
 }
 
+export interface SuccessResponse<T> {
+  data: T;
+  message: string;
+}
+
 export interface Product {
   ProductId: number;
   ProductName: string;
@@ -26,6 +31,11 @@ export interface Product {
   Slug: string;
 }
 
+export interface ProductListReponse {
+  items: Product[];
+  total: number;
+}
+
 export interface Contact {
   ContactId: number;
   CreatedAt: string;
@@ -33,11 +43,6 @@ export interface Contact {
   FullName: string;
   Message: string;
   Phone: string;
-}
-
-export interface SuccessResponse<T> {
-  data: T;
-  message: string;
 }
 
 export interface ContactInputForms {

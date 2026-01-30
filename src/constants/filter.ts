@@ -1,8 +1,4 @@
-import type {
-  Color,
-  Material,
-  UseProductsParams,
-} from "@/types/domain/product.type";
+import type { Color, Material } from "~/types/domain/product.type";
 import { CATEGORY } from "./enum";
 
 export const CATEGORIES = [
@@ -25,14 +21,4 @@ export const COLOR_MAP: Record<Color, string> = {
   Đen: "#000000",
   Xám: "#808080",
   "Tự nhiên": "#D2B48C",
-};
-
-export const defaultParams: UseProductsParams = {
-  CategoryId: [],
-  minPrice: 0,
-  maxPrice: 50000000,
-  Materials: [],
-  Colors: [],
-  OrderBy: "",
-  Sort: "",
 };

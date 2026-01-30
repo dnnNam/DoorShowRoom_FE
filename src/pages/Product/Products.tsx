@@ -2,7 +2,6 @@ import FilterSidebar from "~/components/FilterSideBar";
 import ProductCard from "~/components/ProductCard";
 
 import { useAllProducts } from "~/hooks/productHooks";
-import { useProductStore } from "~/stores/productStore";
 
 import type { FilterState, OrderByOption } from "~/types/domain/product.type";
 
@@ -22,9 +21,8 @@ export default function Products() {
   });
   // console.log("filters nè: ", filters);
   // gọi APi lấy products
-  useAllProducts(filters);
-  // lấy data từ store
-  const products = useProductStore((state) => state.products);
+  const { data: products } = useAllProducts(filters);
+
   console.log("data từ API: ", products);
 
   return (
@@ -53,7 +51,7 @@ export default function Products() {
                 <span className="text-sm text-gray-500">
                   Hiển thị{" "}
                   <span className="font-bold text-gray-900">
-                    {/* {filteredProducts.length} */}
+                    {products?.items?.length || 0}
                   </span>{" "}
                   sản phẩm
                 </span>
@@ -94,9 +92,9 @@ export default function Products() {
               </div>
             </div>
             {/* Product Grid */}
-            {products && products.length > 0 ? (
+            {products && products.items.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {products.map((product) => (
+                {products?.items?.map((product) => (
                   <ProductCard key={product.ProductId} product={product} />
                 ))}
               </div>
