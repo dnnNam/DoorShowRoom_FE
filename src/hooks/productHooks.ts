@@ -11,6 +11,7 @@ export const useAllProducts = (params: UseProductsParams) => {
     enabled: !!params && Object.keys(params).length > 0,
     staleTime: 5 * 60 * 1000,
     gcTime: 5 * 60 * 1000,
+    placeholderData: (previousData) => previousData,
   });
   console.log("tao nè", query?.data);
 

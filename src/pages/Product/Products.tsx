@@ -1,12 +1,15 @@
 import FilterSidebar from "~/components/FilterSideBar";
 import ProductCard from "~/components/ProductCard";
-
+import classNames from "classnames";
 import { useAllProducts } from "~/hooks/productHooks";
 
 import type { FilterState, OrderByOption } from "~/types/domain/product.type";
 
 import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
 import { useState } from "react";
+
+import { Link } from "react-router-dom";
+import { useQueryString } from "~/utils/utils";
 
 export default function Products() {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
@@ -18,12 +21,23 @@ export default function Products() {
     Colors: [],
     OrderBy: "",
     Sort: "",
+    page: 1,
+    limit: 6,
   });
-  // console.log("filters nè: ", filters);
+  // lấy page từ query string
+  const queryString: { page?: string } = useQueryString();
+  const page = Number(queryString.page) || 1;
+  // đồng bộ page từ query string vào filters
+
   // gọi APi lấy products
-  const { data: products } = useAllProducts(filters);
+  const { data: products } = useAllProducts({
+    ...filters,
+    page: page,
+  });
 
   console.log("data từ API: ", products);
+  const totalProducts = Number(products?.total) || 0;
+  const totalPage = Math.ceil(totalProducts / filters?.limit);
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-900">
@@ -119,6 +133,8 @@ export default function Products() {
                       Colors: [],
                       OrderBy: "",
                       Sort: "",
+                      page: 1,
+                      limit: 6,
                     })
                   }
                   className="text-orange-600 font-medium hover:underline"
@@ -127,6 +143,69 @@ export default function Products() {
                 </button>
               </div>
             )}
+
+            {/* Pagination */}
+
+            <div className="mt-6 flex justify-center">
+              <nav aria-label="Page navigation example">
+                <ul className="inline-flex -space-x-px">
+                  <li>
+                    {page === 1 ? (
+                      // nếu như page = 1 không cho previous thì ta trả về cho nó 1 thẻ span không click được
+                      <span className="cursor-not-allowed rounded-l-lg border border-gray-300 bg-white py-2 px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        Previous
+                      </span>
+                    ) : (
+                      // khác 1 thì trả về thẻ Link để click
+                      <Link
+                        className=" rounded-l-lg border border-gray-300 bg-white py-2 px-3 leading-tight text-gray-500 hover:bg-gray-100
+                     hover:text-gray-700 "
+                        to={`/products/?page=${page - 1}`}
+                      >
+                        Previous
+                      </Link>
+                    )}
+                  </li>
+                  {Array(totalPage)
+                    .fill(0)
+                    .map((_, index) => {
+                      const pageNumber = index + 1;
+                      const isActive = page === pageNumber;
+                      return (
+                        <li key={pageNumber}>
+                          <Link
+                            className={classNames(
+                              "border border-gray-300   py-2 px-3 leading-tight     hover:bg-gray-100  hover:text-gray-700",
+                              {
+                                "bg-gray-100 text-gray-700": isActive,
+                                "bg-white  text-gray-500": !isActive, // khi không có active thì nó mới có bg-white
+                              },
+                            )}
+                            to={`/products?page=${pageNumber}`}
+                          >
+                            {pageNumber}
+                          </Link>
+                        </li>
+                      );
+                    })}
+
+                  <li>
+                    {page === totalPage ? (
+                      <span className="cursor-not-allowed rounded-r-lg border border-gray-300 bg-white py-2 px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                        Next
+                      </span>
+                    ) : (
+                      <Link
+                        className="rounded-r-lg border border-gray-300 bg-white py-2 px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                        to={`/products/?page=${page + 1}`}
+                      >
+                        Next
+                      </Link>
+                    )}
+                  </li>
+                </ul>
+              </nav>
+            </div>
           </div>
         </div>
       </main>

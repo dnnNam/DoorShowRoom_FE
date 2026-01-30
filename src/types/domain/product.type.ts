@@ -9,6 +9,8 @@ export interface FilterState {
   Colors: string[];
   OrderBy: OrderByOption;
   Sort: SortOption;
+  page: number;
+  limit: number;
 }
 
 export interface UseProductsParams extends Partial<FilterState> {
