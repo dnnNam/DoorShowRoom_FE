@@ -29,6 +29,7 @@ export function FilterSidebar({
       return {
         ...prev,
         [key]: updatedValue,
+        page: 1,
       };
     });
   };
@@ -37,6 +38,7 @@ export function FilterSidebar({
     setFilters((prev) => ({
       ...prev,
       [key]: value,
+      page: 1,
     }));
   };
 
@@ -49,6 +51,8 @@ export function FilterSidebar({
       Colors: [],
       OrderBy: "",
       Sort: "",
+      page: 1,
+      limit: 6,
     });
   };
   const formatPrice = (price: number) => {
