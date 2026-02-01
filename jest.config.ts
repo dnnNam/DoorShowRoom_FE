@@ -4,7 +4,6 @@ const config: Config = {
   preset: "ts-jest", // Dùng ts-jest để biên dịch TypeScript khi chạy test.
   testEnvironment: "jsdom", // Mặc định Jest chạy trong môi trường Node.js, nhưng React component cần DOM API (như document, window, HTML Element...). Nên chúng ta cần jsdom giả lập trình duyệt trong Node, giúp test React component.
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"], // Khai báo file jest.setup.ts sẽ chạy sau khi Jest khởi tạo môi trường test ENV.
-  globalSetup: "<rootDir>/jest.global-setup.ts",
   moduleNameMapper: {
     "^~/(.*)$": "<rootDir>/src/$1",
   }, // ánh xạ alias khi import module. Cannot find module '~/...' khi chạy test
@@ -12,6 +11,17 @@ const config: Config = {
 
   collectCoverage: true,
   coverageReporters: ["text"],
+
+  transform: {
+    "^.+\\.tsx?$": [
+      "ts-jest",
+      {
+        tsconfig: {
+          jsx: "react-jsx",
+        },
+      },
+    ],
+  },
 };
 
 export default config;
