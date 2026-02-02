@@ -40,7 +40,7 @@ class Http {
         }
 
         return Promise.reject(error);
-      }
+      },
     );
   }
 }
