@@ -13,7 +13,6 @@ export const useAllProducts = (params: UseProductsParams) => {
     gcTime: 5 * 60 * 1000,
     placeholderData: (previousData) => previousData,
   });
-  console.log("tao nè", query?.data);
 
   return {
     data: query.data?.data?.data,
