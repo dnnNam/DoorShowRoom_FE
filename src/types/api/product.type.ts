@@ -1,7 +1,11 @@
-export interface ProductImage {
-  ImageId: number;
+export interface ProductMedia {
+  MediaId: number;
   ProductId: number;
-  ImageUrl: string;
+  Url: string;
+  PublicId: string | null;
+  ResourceType: string | null;
+  IsPrimary: boolean;
+  CreatedAt: string | null;
 }
 
 export interface Category {
@@ -26,7 +30,7 @@ export interface Product {
   IsActive: boolean;
   IsBestSeller: boolean;
   CreatedAt: string;
-  ProductImages: ProductImage[];
+  ProductMedia: ProductMedia[];
   Categories: Category;
   Slug: string;
 }
