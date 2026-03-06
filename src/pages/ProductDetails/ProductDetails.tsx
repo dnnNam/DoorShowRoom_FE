@@ -43,7 +43,7 @@ export default function ProductDetail() {
           <div className="bg-white rounded-3xl shadow-xl overflow-hidden group hover:shadow-2xl transition-shadow duration-300">
             <div className="aspect-square relative">
               <img
-                src={product?.ProductImages[0]?.ImageUrl}
+                src={product?.ProductMedia[0]?.Url}
                 alt={product?.ProductName}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
