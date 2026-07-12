@@ -1,15 +1,18 @@
 import React, { useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
+
 interface VideoModalProps {
   isOpen: boolean;
   onClose: () => void;
-  videoId: string;
+  videoUrl: string;
   title: string;
 }
+
 export default function VideoModal({
   isOpen,
   onClose,
-  videoId,
+  videoUrl,
   title,
 }: VideoModalProps) {
   // Prevent scrolling when modal is open
@@ -23,39 +26,69 @@ export default function VideoModal({
       document.body.style.overflow = "unset";
     };
   }, [isOpen]);
-  if (!isOpen) return null;
+
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-      <div
-        className="absolute inset-0 bg-black/90 backdrop-blur-sm transition-opacity"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-
-      <div className="relative w-full max-w-5xl bg-black rounded-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
-        <div className="absolute top-0 right-0 p-4 z-10">
-          <button
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+        >
+          <motion.div
+            className="absolute inset-0 bg-black/90 backdrop-blur-sm"
             onClick={onClose}
-            className="bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors backdrop-blur-md"
-          >
-            <X className="h-6 w-6" />
-          </button>
-        </div>
-
-        <div className="relative pt-[56.25%] w-full bg-black">
-          <iframe
-            className="absolute top-0 left-0 w-full h-full"
-            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
-            title={title}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
+            aria-hidden="true"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           />
-        </div>
 
-        <div className="p-4 bg-gray-900 text-white">
-          <h3 className="text-lg font-medium">{title}</h3>
-        </div>
-      </div>
-    </div>
+          <motion.div
+            className="relative w-full max-w-5xl bg-black rounded-xl overflow-hidden shadow-2xl"
+            initial={{ opacity: 0, scale: 0.92, y: 24 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 12 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="absolute top-0 right-0 p-4 z-10">
+              <button
+                onClick={onClose}
+                className="bg-black/50 hover:bg-[#775a19] text-white rounded-full p-2 transition-colors duration-300 backdrop-blur-md"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+
+            <div className="relative pt-[56.25%] w-full bg-black">
+              {videoUrl ? (
+                <video
+                  key={videoUrl}
+                  className="absolute top-0 left-0 w-full h-full"
+                  src={videoUrl}
+                  controls
+                  autoPlay
+                  playsInline
+                >
+                  Trình duyệt của bạn không hỗ trợ phát video.
+                </video>
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center text-white text-sm">
+                  Không tìm thấy video
+                </div>
+              )}
+            </div>
+
+            <div className="p-5 bg-[#111111] text-white">
+              <h3 className="font-['Playfair_Display'] text-lg md:text-xl font-medium">
+                {title}
+              </h3>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

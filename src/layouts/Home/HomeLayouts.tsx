@@ -1,7 +1,6 @@
-import ChatWidget from "~/components/Chatwidget";
+import { Outlet } from "react-router-dom";
 import Footer from "~/components/Footer";
 import Header from "~/components/Header";
-import { Outlet } from "react-router-dom";
 
 export default function HomeLayouts() {
   return (
@@ -9,7 +8,7 @@ export default function HomeLayouts() {
       <Header />
       <Outlet />
       <Footer />
-      <ChatWidget />
+      {/* <ChatWidget /> */}
     </div>
   );
 }

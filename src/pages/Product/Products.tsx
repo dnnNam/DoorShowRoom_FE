@@ -1,19 +1,17 @@
 import FilterSidebar from "~/components/FilterSideBar";
 import ProductCard from "~/components/ProductCard";
-
 import { useAllProducts } from "~/hooks/productHooks";
-
 import type { FilterState, OrderByOption } from "~/types/domain/product.type";
-
-import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "motion/react";
+import { SlidersHorizontal, X } from "lucide-react";
+import Seo from "~/components/seo/Seo";
 
 export default function Products() {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [filters, setFilters] = useState<FilterState>({
     CategoryId: [],
-    minPrice: 0,
-    maxPrice: 8500000,
     Materials: [],
     Colors: [],
     OrderBy: "",
@@ -22,102 +20,157 @@ export default function Products() {
     limit: 6,
   });
 
-  // gọi APi lấy products
+  // Gọi API lấy danh sách sản phẩm chính dựa theo bộ lọc
   const { data: products } = useAllProducts(filters);
+
+  // Gọi API lấy dữ liệu tiêu biểu cho khối Gợi Ý Sản Phẩm dưới Sidebar
+  const { data: recommendedData } = useAllProducts({
+    page: 1,
+    limit: 3, 
+    Sort: "best_selling",
+  });
 
   const totalProducts = Number(products?.total) || 0;
   const totalPages = Math.ceil(totalProducts / filters?.limit);
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans text-gray-900">
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar - Desktop */}
-          <aside className="hidden lg:block w-72 flex-shrink-0">
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 sticky top-24">
+    <div className="bg-[#f9f9f9] font-['Inter'] text-[#1a1c1c] selection:bg-[#fed488] min-h-screen">
+      <Seo
+        title="Danh Mục Sản Phẩm"
+        description="Khám phá đầy đủ danh mục cửa nhôm Xingfa, cửa kính cường lực, cửa cuốn của Đại Nam — lọc theo chất liệu, màu sắc, mức giá phù hợp với công trình của bạn."
+        path="/products"
+      />
+
+      <main className="pt-32 pb-32">
+        {/* Hero Section / Catalog Header */}
+        <section className="max-w-[1440px] mx-auto px-20 mb-20">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+            <div className="max-w-2xl">
+              <span className="text-xs font-semibold tracking-widest uppercase text-[#775a19] mb-4 block">Hệ Thống Kiến Trúc</span>
+              <h1 className="font-['Playfair_Display'] text-5xl md:text-6xl font-medium leading-tight">Danh Mục Sản Phẩm</h1>
+            </div>
+            
+            {/* Toolbar sắp xếp */}
+            <div className="flex items-center gap-4">
+              <button
+                className="lg:hidden flex items-center gap-2 px-4 py-2 bg-[#eeeeee] text-xs font-semibold tracking-widest uppercase transition-colors"
+                onClick={() => setIsMobileFilterOpen(true)}
+              >
+                <SlidersHorizontal className="w-3.5 h-3.5" />
+                Bộ lọc
+              </button>
+              
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold tracking-widest uppercase text-[#444748]">Sắp xếp theo:</span>
+                <select
+                  value={filters.OrderBy || filters.Sort}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === "newest" || value === "best_selling") {
+                      setFilters((prev) => ({
+                        ...prev,
+                        Sort: value,
+                        OrderBy: "",
+                      }));
+                    } else {
+                      setFilters((prev) => ({
+                        ...prev,
+                        OrderBy: value as OrderByOption,
+                        Sort: "",
+                      }));
+                    }
+                  }}
+                  className="bg-transparent border-none text-xs font-semibold tracking-widest uppercase text-black focus:ring-0 cursor-pointer pr-8"
+                >
+                  <option value="newest">Mới Nhất</option>
+                  <option value="best_selling">Phổ Biến Nhất</option>
+                  <option value="asc">Giá Tăng Dần</option>
+                  <option value="desc">Giá Giảm Dần</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div className="text-xs text-[#444748] mt-4 font-semibold tracking-widest uppercase">
+            Hiển thị <span className="text-black font-bold">{products?.items?.length || 0}</span> sản phẩm
+          </div>
+        </section>
+
+        {/* Layout Danh mục chính */}
+        <div className="max-w-[1440px] mx-auto px-20 grid grid-cols-12 gap-8">
+          
+          {/* Sidebar bộ lọc & Gợi ý sản phẩm - Desktop */}
+          <aside className="col-span-12 lg:col-span-3 hidden lg:block">
+            <div className="sticky top-32 space-y-12">
               <FilterSidebar filters={filters} setFilters={setFilters} />
+
+              {/* Phần GỢI Ý SẢN PHẨM dưới bộ lọc */}
+              <div className="pt-8 border-t border-[#e2e2e2]">
+                <h3 className="font-['Playfair_Display'] text-xl font-medium text-black mb-6 tracking-tight">
+                  Bộ Sưu Tập Gợi Ý
+                </h3>
+                <div className="space-y-6">
+                  {recommendedData?.items?.map((item) => (
+                    <Link 
+                      key={item.ProductId} 
+                      to={`/products/${item.ProductId}-${item.Slug}`}
+                      className="flex gap-4 group/rec items-center"
+                    >
+                      <div className="w-20 h-24 shrink-0 overflow-hidden bg-[#eeeeee]">
+                        <img 
+                            src={item?.Media?.[0]?.Url}
+                          alt={item.ProductName} 
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover/rec:scale-105"
+                        />
+                      </div>
+                      <div className="flex flex-col min-w-0">
+                        <h4 className="text-sm font-medium text-black line-clamp-2 group-hover/rec:text-[#775a19] transition-colors">
+                          {item.ProductName}
+                        </h4>
+                        <p className="text-[9px] text-[#444748] uppercase tracking-wider mt-0.5">
+                          {item.Categories?.CategoryName || "Hệ Cao Cấp"}
+                        </p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
             </div>
           </aside>
-          {/* Main Content */}
-          <div className="flex-1">
-            {/* Toolbar */}
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-              <div className="flex items-center gap-2">
-                <button
-                  // khi người màn hình dưới 1024px hiển thị moblie filter
-                  className="lg:hidden flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-md text-sm font-medium hover:bg-gray-200 transition-colors"
-                  onClick={() => setIsMobileFilterOpen(true)}
-                >
-                  <SlidersHorizontal className="w-4 h-4" />
-                  Bộ lọc
-                </button>
-                <span className="text-sm text-gray-500">
-                  Hiển thị{" "}
-                  <span className="font-bold text-gray-900">
-                    {products?.items?.length || 0}
-                  </span>{" "}
-                  sản phẩm
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-500 hidden sm:inline">
-                  Sắp xếp theo:
-                </span>
-                <div className="relative group">
-                  <select
-                    value={filters.OrderBy || filters.Sort}
-                    onChange={(e) => {
-                      const value = e.target.value;
 
-                      if (value === "newest" || value === "best_selling") {
-                        setFilters((prev) => ({
-                          ...prev,
-                          Sort: value,
-                          OrderBy: "",
-                        }));
-                      } else {
-                        setFilters((prev) => ({
-                          ...prev,
-                          OrderBy: value as OrderByOption,
-                          Sort: "",
-                        }));
-                      }
-                    }}
-                    className="appearance-none bg-gray-50 border border-gray-200 text-gray-700 py-2 pl-4 pr-10 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-orange-500 cursor-pointer hover:bg-gray-100 transition-colors"
-                  >
-                    <option value="newest">Mới nhất</option>
-                    <option value="best_selling">Bán chạy nhất</option>
-                    <option value="asc">Giá tăng dần</option>
-                    <option value="desc">Giá giảm dần</option>
-                  </select>
-                  <ChevronDown className="w-4 h-4 text-gray-500 absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none" />
-                </div>
-              </div>
-            </div>
-            {/* Product Grid */}
+          {/* Lưới sản phẩm chính */}
+          <section className="col-span-12 lg:col-span-9">
             {products && products.items.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <motion.div
+                key={filters.page + JSON.stringify(filters)}
+                initial="hidden"
+                animate="show"
+                variants={{ show: { transition: { staggerChildren: 0.06 } } }}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16"
+              >
                 {products?.items?.map((product) => (
-                  <ProductCard key={product.ProductId} product={product} />
+                  <motion.div
+                    key={product.ProductId}
+                    variants={{
+                      hidden: { opacity: 0, y: 24 },
+                      show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+                    }}
+                  >
+                    <ProductCard product={product} />
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             ) : (
-              <div className="bg-white p-12 rounded-lg border border-dashed border-gray-300 text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
-                  <SlidersHorizontal className="w-8 h-8 text-gray-400" />
-                </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <div className="border border-dashed border-[#c4c7c7] p-16 text-center">
+                <h3 className="font-['Playfair_Display'] text-2xl mb-2 text-black">
                   Không tìm thấy sản phẩm
                 </h3>
-                <p className="text-gray-500 mb-6">
-                  Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm của bạn
+                <p className="text-sm text-[#444748] mb-6">
+                  Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm của bạn.
                 </p>
                 <button
                   onClick={() =>
                     setFilters({
                       CategoryId: [],
-                      minPrice: 0,
-                      maxPrice: 8500000,
                       Materials: [],
                       Colors: [],
                       OrderBy: "",
@@ -126,7 +179,7 @@ export default function Products() {
                       limit: 6,
                     })
                   }
-                  className="text-orange-600 font-medium hover:underline"
+                  className="text-xs font-semibold tracking-widest uppercase text-[#775a19] underline hover:text-black"
                 >
                   Xóa tất cả bộ lọc
                 </button>
@@ -134,112 +187,94 @@ export default function Products() {
             )}
 
             {/* Pagination */}
-
-            <div className="mt-8 flex justify-center">
-              <nav>
-                <ul className="flex items-center gap-2">
-                  {/* Previous */}
-                  <li>
-                    {filters.page === 1 ? (
-                      <span className="px-4 py-2 text-sm font-medium rounded-md border border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed">
-                        Previous
-                      </span>
-                    ) : (
+            {totalPages > 1 && (
+              <div className="mt-20 flex justify-center">
+                <nav>
+                  <ul className="flex items-center gap-3">
+                    <li>
                       <button
-                        onClick={() =>
-                          setFilters((prev) => ({
-                            ...prev,
-                            page: prev.page - 1,
-                          }))
-                        }
-                        className="px-4 py-2 text-sm font-medium rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 transition"
+                        disabled={filters.page === 1}
+                        onClick={() => setFilters((prev) => ({ ...prev, page: prev.page - 1 }))}
+                        className={`px-4 py-2 text-xs font-semibold tracking-widest uppercase border transition ${
+                          filters.page === 1
+                            ? "border-gray-200 text-gray-400 cursor-not-allowed"
+                            : "border-black text-black hover:bg-black hover:text-white"
+                        }`}
                       >
-                        Previous
+                        Trước
                       </button>
-                    )}
-                  </li>
-
-                  {/* Page numbers */}
-                  {Array.from({ length: totalPages }, (_, index) => {
-                    const pageNumber = index + 1;
-                    const isActive = filters.page === pageNumber;
-
-                    return (
-                      <li key={pageNumber}>
-                        <button
-                          onClick={() =>
-                            setFilters((prev) => ({
-                              ...prev,
-                              page: pageNumber,
-                            }))
-                          }
-                          className={`px-4 py-2 text-sm font-medium rounded-md border transition ${
-                            isActive
-                              ? "bg-orange-600 text-white border-orange-600"
-                              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-                          }`}
-                        >
-                          {pageNumber}
-                        </button>
-                      </li>
-                    );
-                  })}
-
-                  {/* Next */}
-                  <li>
-                    {filters.page === totalPages ? (
-                      <span className="px-4 py-2 text-sm font-medium rounded-md border border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed">
-                        Next
-                      </span>
-                    ) : (
+                    </li>
+                    {Array.from({ length: totalPages }, (_, index) => {
+                      const pageNumber = index + 1;
+                      const isActive = filters.page === pageNumber;
+                      return (
+                        <li key={pageNumber}>
+                          <button
+                            onClick={() => setFilters((prev) => ({ ...prev, page: pageNumber }))}
+                            className={`w-10 h-10 text-xs font-semibold transition border ${
+                              isActive
+                                ? "bg-black text-white border-black"
+                                : "bg-transparent text-black border-transparent hover:border-black"
+                            }`}
+                          >
+                            {pageNumber}
+                          </button>
+                        </li>
+                      );
+                    })}
+                    <li>
                       <button
-                        onClick={() =>
-                          setFilters((prev) => ({
-                            ...prev,
-                            page: prev.page + 1,
-                          }))
-                        }
-                        className="px-4 py-2 text-sm font-medium rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 transition"
+                        disabled={filters.page === totalPages}
+                        onClick={() => setFilters((prev) => ({ ...prev, page: prev.page + 1 }))}
+                        className={`px-4 py-2 text-xs font-semibold tracking-widest uppercase border transition ${
+                          filters.page === totalPages
+                            ? "border-gray-200 text-gray-400 cursor-not-allowed"
+                            : "border-black text-black hover:bg-black hover:text-white"
+                        }`}
                       >
-                        Next
+                        Sau
                       </button>
-                    )}
-                  </li>
-                </ul>
-              </nav>
-            </div>
-          </div>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            )}
+          </section>
         </div>
+
+     
       </main>
-      {/* Mobile Filter Overlay */}
-      {isMobileFilterOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div
-            className="absolute inset-0 bg-black/50"
-            onClick={() => setIsMobileFilterOpen(false)}
-          />
-          <div className="absolute right-0 top-0 bottom-0 w-80 bg-white shadow-xl p-6 overflow-y-auto animate-in slide-in-from-right duration-300">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-bold text-lg">Bộ lọc</h3>
-              <button
-                onClick={() => setIsMobileFilterOpen(false)}
-                className="p-2 hover:bg-gray-100 rounded-full"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <FilterSidebar filters={filters} setFilters={setFilters} />
-            <div className="mt-8 pt-4 border-t border-gray-100">
-              <button
-                onClick={() => setIsMobileFilterOpen(false)}
-                className="w-full bg-orange-600 text-white py-3 rounded-md font-medium hover:bg-orange-700"
-              >
-                {/* Xem {filteredProducts.length} kết quả */}
-              </button>
-            </div>
+
+      {/* Mobile Filter Drawer Overlay */}
+      <AnimatePresence>
+        {isMobileFilterOpen && (
+          <div className="fixed inset-0 z-50 lg:hidden">
+            <motion.div
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+              onClick={() => setIsMobileFilterOpen(false)}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+            />
+            <motion.div
+              className="absolute right-0 top-0 bottom-0 w-80 bg-white p-6 overflow-y-auto shadow-2xl"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="flex items-center justify-between mb-6 border-b border-[#c4c7c7] pb-4">
+                <h3 className="font-['Playfair_Display'] text-xl font-medium">Bộ lọc</h3>
+                <button onClick={() => setIsMobileFilterOpen(false)} className="text-black">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <FilterSidebar filters={filters} setFilters={setFilters} />
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   );
 }

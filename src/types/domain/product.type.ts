@@ -3,8 +3,6 @@ import type { Product } from "~/types/api/product.type";
 
 export interface FilterState {
   CategoryId: number[];
-  minPrice: number;
-  maxPrice: number;
   Materials: string[];
   Colors: string[];
   OrderBy: OrderByOption;

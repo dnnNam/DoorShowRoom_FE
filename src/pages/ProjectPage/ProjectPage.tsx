@@ -1,157 +1,256 @@
-import React, { useState } from "react";
-import { Play, MapPin, Calendar } from "lucide-react";
-import VideoModal from "~/components/VideoModal";
+import { ArrowRight, Calendar, ChevronLeft, ChevronRight, Play } from "lucide-react";
+import { motion } from "motion/react";
+import { useState } from "react";
 
-interface Project {
-  id: string;
-  title: string;
-  location: string;
-  year: string;
-  thumbnail: string;
-  videoId: string; // YouTube Video ID
-  category: string;
+import Seo from "~/components/seo/Seo";
+import VideoModal from "~/components/VideoModal";
+import { useVideos } from "~/hooks/videoHooks";
+import { cubicBezier } from "motion";
+
+const PAGE_SIZE = 9;
+
+const gridContainer = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.08 },
+  },
+};
+
+const gridItem = {
+  hidden: { opacity: 0, y: 30 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+     duration: 0.5,
+      ease: cubicBezier(0.22, 1, 0.36, 1),
 }
+  },
+};
+
 export default function ProjectPage() {
+  const [page, setPage] = useState(1);
   const [selectedVideo, setSelectedVideo] = useState<{
-    id: string;
+    url: string;
     title: string;
   } | null>(null);
-  const projects: Project[] = [
-    {
-      id: "1",
-      title: "Biệt thự hiện đại ven sông",
-      location: "Quận 2, TP.HCM",
-      year: "2023",
-      thumbnail:
-        "https://images.unsplash.com/photo-1600596542815-27b88e57e62f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      videoId: "ysz5S6PUM-U", // Placeholder ID
-      category: "Biệt thự",
-    },
-    {
-      id: "2",
-      title: "Nhà phố thương mại Shophouse",
-      location: "Quận 7, TP.HCM",
-      year: "2023",
-      thumbnail:
-        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      videoId: "LXb3EKWsInQ",
-      category: "Nhà phố",
-    },
-    {
-      id: "3",
-      title: "Căn hộ Duplex cao cấp",
-      location: "Thủ Đức, TP.HCM",
-      year: "2022",
-      thumbnail:
-        "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      videoId: "tgbNymZ7vqY",
-      category: "Căn hộ",
-    },
-    {
-      id: "4",
-      title: "Villa nghỉ dưỡng Đà Lạt",
-      location: "Đà Lạt, Lâm Đồng",
-      year: "2023",
-      thumbnail:
-        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      videoId: "ysz5S6PUM-U",
-      category: "Biệt thự",
-    },
-    {
-      id: "5",
-      title: "Showroom Cửa Đẹp Việt Nam",
-      location: "Quận 10, TP.HCM",
-      year: "2024",
-      thumbnail:
-        "https://images.unsplash.com/photo-1600573472592-401b489a3cdc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      videoId: "LXb3EKWsInQ",
-      category: "Showroom",
-    },
-    {
-      id: "6",
-      title: "Penthouse View Sông Sài Gòn",
-      location: "Bình Thạnh, TP.HCM",
-      year: "2023",
-      thumbnail:
-        "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      videoId: "tgbNymZ7vqY",
-      category: "Căn hộ",
-    },
-  ];
-  return (
-    <div className="min-h-screen bg-gray-50 pb-20">
-      {/* Header */}
-      <div className="bg-gray-900 text-white py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Dự Án Nhà Mẫu</h1>
-          <p className="text-gray-400 max-w-2xl mx-auto text-lg">
-            Tham quan thực tế các công trình tiêu biểu đã được Cửa Đẹp Việt Nam
-            thi công và hoàn thiện.
-          </p>
-        </div>
-      </div>
-      {/* Gallery Grid */}
-      <div className="container mx-auto px-4 -mt-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project) => (
-            <div
-              key={project.id}
-              className="group bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
-            >
-              {/* Thumbnail Container */}
-              <div
-                className="relative aspect-video cursor-pointer overflow-hidden"
-                onClick={() =>
-                  setSelectedVideo({
-                    id: project.videoId,
-                    title: project.title,
-                  })
-                }
-              >
-                <img
-                  src={project.thumbnail}
-                  alt={project.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
 
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors flex items-center justify-center">
-                  <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center group-hover:scale-110 transition-transform duration-300 border border-white/50">
-                    <Play className="h-8 w-8 text-white fill-current ml-1" />
-                  </div>
-                </div>
-                {/* Category Tag */}
-                <div className="absolute top-4 left-4">
-                  <span className="px-3 py-1 bg-[#FF6B35] text-white text-xs font-bold uppercase tracking-wider rounded-full shadow-sm">
-                    {project.category}
-                  </span>
-                </div>
-              </div>
-              {/* Content */}
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#FF6B35] transition-colors">
-                  {project.title}
-                </h3>
-                <div className="flex items-center gap-4 text-sm text-gray-500">
-                  <div className="flex items-center gap-1">
-                    <MapPin className="h-4 w-4" />
-                    <span>{project.location}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Calendar className="h-4 w-4" />
-                    <span>{project.year}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
+  const { items: videos, total, isLoading, isError } = useVideos({
+    page,
+    limit: PAGE_SIZE,
+  });
+
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+
+  const formatDate = (createdAt: string) => {
+    const date = new Date(createdAt);
+    return Number.isNaN(date.getTime())
+      ? ""
+      : date.toLocaleDateString("vi-VN");
+  };
+
+  return (
+    <div className="min-h-screen bg-[#f9f9f9]">
+      <Seo
+        title="Dự Án Nhà Mẫu"
+        description="Tham quan thực tế các công trình tiêu biểu đã được Đại Nam thi công và hoàn thiện — video thực tế cửa nhôm, cửa cuốn, cửa kính cường lực tại các dự án nhà ở, biệt thự."
+        path="/projects"
+      />
+
+      {/* Hero */}
+      <motion.section
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="bg-[#111111] pt-40 pb-28 px-[20px] md:px-[80px]"
+      >
+        <div className="max-w-[1440px] mx-auto text-center">
+          <motion.span
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-[11px] font-semibold tracking-[0.3em] text-[#c9a24a] uppercase mb-5 block"
+          >
+            Thư Viện Công Trình
+          </motion.span>
+          <motion.h1
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="font-['Playfair_Display'] text-[40px] md:text-[64px] font-medium text-white leading-tight mb-6"
+          >
+            Dự Án Nhà Mẫu
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="text-white/60 max-w-2xl mx-auto text-[16px] md:text-[18px] font-light leading-relaxed"
+          >
+            Tham quan thực tế các công trình tiêu biểu đã được Đại Nam thi
+            công và hoàn thiện.
+          </motion.p>
         </div>
+      </motion.section>
+
+      <div className="max-w-[1440px] mx-auto px-[20px] md:px-[80px] -mt-16 pb-32">
+        {/* Loading state */}
+        {isLoading && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="bg-white border border-[#e8e6e1]">
+                <div className="aspect-video bg-[#e8e6e1] animate-pulse" />
+                <div className="p-6 md:p-8 space-y-3">
+                  <div className="h-5 w-3/4 bg-[#e8e6e1] animate-pulse" />
+                  <div className="h-3 w-1/3 bg-[#e8e6e1] animate-pulse" />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Error state */}
+        {!isLoading && isError && (
+          <div className="bg-white border border-dashed border-[#c4c7c7] py-24 text-center">
+            <p className="text-[#444748]">
+              Không thể tải danh sách video. Vui lòng thử lại sau.
+            </p>
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!isLoading && !isError && videos.length === 0 && (
+          <div className="bg-white border border-dashed border-[#c4c7c7] py-24 text-center">
+            <p className="text-[#444748]">
+              Chưa có video dự án nào được đăng tải.
+            </p>
+          </div>
+        )}
+
+        {/* Gallery Grid */}
+        {!isLoading && !isError && videos.length > 0 && (
+          <motion.div
+            variants={gridContainer}
+            initial="hidden"
+            animate="show"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            {videos.map((video) => {
+              const title =  "Dự án Đại Nam";
+              return (
+                <motion.div
+                  key={video.ImageId}
+                  variants={gridItem}
+                  className="group bg-white border border-[#e8e6e1] hover:border-[#775a19]/40 transition-all duration-500 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)]"
+                >
+                  {/* Video preview */}
+                  <div
+                    className="relative aspect-video cursor-pointer overflow-hidden bg-black"
+                    onClick={() =>
+                      setSelectedVideo({ url: video.Url, title })
+                    }
+                  >
+                    <video
+                      className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.2,0,0,1)] group-hover:scale-105"
+                      src={video.Url}
+                      muted
+                      playsInline
+                      preload="metadata"
+                    />
+
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-500" />
+
+                    {/* Play button */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-16 h-16 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 group-hover:bg-white transition-all duration-300 shadow-lg">
+                        <Play className="h-6 w-6 text-black fill-current ml-1" />
+                      </div>
+                    </div>
+
+                    {/* Category Tag */}
+                    {video.Product?.ProductName && (
+                      <div className="absolute top-4 left-4 right-4">
+                        <span className="inline-block max-w-full truncate bg-white/95 text-[#775a19] text-[10px] font-bold uppercase tracking-widest px-3 py-1.5">
+                         Dự án Đại Nam
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-6 md:p-8">
+                    <h3 className="font-['Playfair_Display'] text-xl md:text-2xl font-medium text-black leading-snug mb-4 line-clamp-2 group-hover:text-[#775a19] transition-colors duration-300">
+                      {title}
+                    </h3>
+
+                    <div className="flex items-center justify-between pt-4 border-t border-[#e8e6e1]">
+                      <div className="flex items-center gap-2 text-[#767586]">
+                        <Calendar className="h-3.5 w-3.5" />
+                        <span className="text-[11px] font-semibold uppercase tracking-widest">
+                          {formatDate(video.CreatedAt)}
+                        </span>
+                      </div>
+
+                      <button
+                        onClick={() =>
+                          setSelectedVideo({ url: video.Url, title })
+                        }
+                        className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-widest text-white opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300"
+                      >
+                        Xem video
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        )}
+
+        {/* Pagination */}
+        {!isLoading && !isError && totalPages > 1 && (
+          <div className="mt-20 flex items-center justify-center gap-3">
+            <button
+              disabled={page === 1}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              className={`flex items-center gap-1 px-4 py-2.5 text-[11px] font-semibold tracking-widest uppercase border transition ${
+                page === 1
+                  ? "border-gray-200 text-gray-400 cursor-not-allowed"
+                  : "border-black text-black hover:bg-black hover:text-white"
+              }`}
+            >
+              <ChevronLeft className="h-3.5 w-3.5" />
+              Trước
+            </button>
+
+            <span className="px-2 text-[13px] text-[#444748]">
+              Trang <span className="font-semibold text-black">{page}</span> /{" "}
+              {totalPages}
+            </span>
+
+            <button
+              disabled={page === totalPages}
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              className={`flex items-center gap-1 px-4 py-2.5 text-[11px] font-semibold tracking-widest uppercase border transition ${
+                page === totalPages
+                  ? "border-gray-200 text-gray-400 cursor-not-allowed"
+                  : "border-black text-black hover:bg-black hover:text-white"
+              }`}
+            >
+              Sau
+              <ChevronRight className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        )}
       </div>
+
       {/* Video Modal */}
       <VideoModal
         isOpen={!!selectedVideo}
         onClose={() => setSelectedVideo(null)}
-        videoId={selectedVideo?.id || ""}
+        videoUrl={selectedVideo?.url || ""}
         title={selectedVideo?.title || ""}
       />
     </div>

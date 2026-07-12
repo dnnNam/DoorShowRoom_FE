@@ -3,7 +3,7 @@ import http from "~/utils/http";
 
 const contactApis = {
   sendContactForm(data: ContactInputForms) {
-    return http.post("/products/Contact", data);
+    return http.post("/api/products/Contact", data);
   },
 };
 export default contactApis;

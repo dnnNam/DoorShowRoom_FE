@@ -1,12 +1,10 @@
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomeLayouts from "~/layouts/Home";
-import About from "~/pages/About";
 import Contact from "~/pages/Contact/Contact";
 import Home from "~/pages/Home";
-import PricingPage from "~/pages/PricingPage/PricingPage";
 import Products from "~/pages/Product";
-import ProjectPage from "~/pages/ProjectPage/ProjectPage";
 import ProductsDetail from "~/pages/ProductDetails/ProductDetails";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import ProjectPage from "~/pages/ProjectPage/ProjectPage";
 
 export default function AppRoutes() {
   const router = createBrowserRouter([
@@ -25,10 +23,9 @@ export default function AppRoutes() {
             { path: ":slugId", element: <ProductsDetail /> },
           ],
         },
-        { path: "about", element: <About /> },
         { path: "contact", element: <Contact /> },
         { path: "projects", element: <ProjectPage /> },
-        { path: "pricing", element: <PricingPage /> },
+        
       ],
     },
   ]);

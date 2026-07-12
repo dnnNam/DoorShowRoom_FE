@@ -1,224 +1,252 @@
-import { ArrowRight, PenTool, ShieldCheck, Star, Wrench } from "lucide-react";
 import { Link } from "react-router-dom";
+import { motion, } from "motion/react";
+import { ArrowRight, Wrench, Palette, VolumeX } from "lucide-react";
+import type { Variants } from "motion/react";
 
-import Button from "~/components/ui/button";
+import { useAllProducts } from "~/hooks/productHooks";
+import Seo from "~/components/seo/Seo";
+
+const heroContainer = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.12, delayChildren: 0.15 },
+  },
+};
+
+const heroItem: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 24,
+  },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.7,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+};
 
 export default function Home() {
-  const features = [
-    {
-      icon: <ShieldCheck className="h-8 w-8 text-amber-700" />,
-      title: "Chất lượng đảm bảo",
-      description:
-        "Cam kết sản phẩm chính hãng, độ bền cao, bảo hành dài hạn lên đến 10 năm.",
-    },
-    {
-      icon: <Wrench className="h-8 w-8 text-amber-700" />,
-      title: "Khảo sát và lắp đặt tận nơi",
-      description:
-        "Đội ngũ kỹ thuật viên chuyên nghiệp , tạo niềm tin và thể hiện dịch vụ giá trị cao ",
-    },
-    {
-      icon: <PenTool className="h-8 w-8 text-amber-700" />,
-      title: "Thiết kế theo yêu cầu",
-      description:
-        "Tùy chỉnh kích thước, màu sắc và kiểu dáng theo ý muốn của khách hàng.",
-    },
-    {
-      icon: <Star className="h-8 w-8 text-amber-700" />,
-      title: "Giá cả cạnh tranh",
-      description:
-        "Trực tiếp từ xưởng sản xuất đến tay người tiêu dùng, không qua trung gian.",
-    },
-  ];
-  const categories = [
-    {
-      name: "Cửa Gỗ",
-      image:
-        "https://images.unsplash.com/photo-1517646331032-9e8563c523a1?auto=format&fit=crop&q=80&w=600",
-      count: "120+ mẫu",
-    },
-    {
-      name: "Cửa Thép",
-      image:
-        "https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?auto=format&fit=crop&q=80&w=600",
-      count: "80+ mẫu",
-    },
-    {
-      name: "Cửa Kính",
-      image:
-        "https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&q=80&w=600",
-      count: "50+ mẫu",
-    },
-    {
-      name: "Cửa Nhựa",
-      image:
-        "https://images.unsplash.com/photo-1481277542470-605612bd2d61?auto=format&fit=crop&q=80&w=600",
-      count: "45+ mẫu",
-    },
-  ];
+  // Lấy 3 sản phẩm bán chạy nhất để hiển thị ở khối "Sản Phẩm Nổi Bật"
+  const { data: featuredData, isLoading } = useAllProducts({
+    page: 1,
+    limit: 3,
+    Sort: "best_selling",
+  });
+
+  const featuredProducts = featuredData?.items ?? [];
+
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Hero Section */}
-      <section className="relative bg-stone-900 h-[600px] flex items-center">
-        <div className="absolute inset-0 overflow-hidden">
+   <main>
+        <Seo
+          title="Trang Chủ"
+          description="Đại Nam - Chuyên sản xuất, lắp đặt cửa cuốn, cửa nhôm Xingfa, cửa kính cường lực và cầu thang kính cao cấp. Giải pháp cửa nhôm đẳng cấp cho không gian sống hiện đại."
+          path="/"
+        />
+
+        {/* Hero Section */}
+        <section className="relative w-full h-[80vh] md:h-screen overflow-hidden">
           <img
-            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=2000"
-            alt="Luxury Door Background"
-            className="w-full h-full object-cover opacity-40"
+            className="absolute inset-0 w-full h-full object-cover object-[center_30%]"
+            alt="Cửa hàng Cửa Cuốn - Nhôm Xingfa Đại Nam"
+            src="https://res.cloudinary.com/dainam/image/upload/v1783785079/1783784986819_182700253967333157_6913400209933374045_69f5e8ea045a06fd34374baf8acf11e9_iobml2.jpg"
           />
-        </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <div className="max-w-2xl">
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-              Nâng Tầm Vẻ Đẹp <br />
-              <span className="text-amber-500">Ngôi Nhà Của Bạn</span>
-            </h1>
-            <p className="text-lg text-stone-300 mb-8 leading-relaxed">
-              Khám phá bộ sưu tập cửa cao cấp với thiết kế tinh tế, chất liệu
-              bền bỉ. Giải pháp hoàn hảo cho không gian sống hiện đại và sang
-              trọng.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/products">
-                <Button size="lg" className="w-full sm:w-auto text-base">
-                  Xem sản phẩm
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-              <Link to="/contact">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="w-full sm:w-auto text-base text-white border-white hover:bg-white hover:text-stone-900"
-                >
-                  Liên hệ tư vấn
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-      {/* Features Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center text-center p-6 rounded-xl bg-stone-50 hover:bg-amber-50 transition-colors duration-300"
-              >
-                <div className="mb-4 p-3 bg-white rounded-full shadow-sm">
-                  {feature.icon}
-                </div>
-                <h3 className="text-lg font-semibold text-stone-900 mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-sm text-stone-600">{feature.description}</p>
+
+          {/* Overlay tối đều toàn ảnh để chữ luôn tương phản tốt, không cần khung hộp */}
+          <div className="absolute inset-0 bg-black/55" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/50" />
+
+          {/* Nội dung */}
+          <motion.div
+            variants={heroContainer}
+            initial="hidden"
+            animate="show"
+            className="relative z-10 h-full flex flex-col items-center justify-center text-center px-[20px]"
+          >
+            <motion.span
+              variants={heroItem}
+              className="text-[11px] md:text-[13px] font-semibold tracking-[0.35em] text-[#e0bd7e] uppercase mb-6 [text-shadow:0_2px_10px_rgba(0,0,0,0.8)]"
+            >
+              Hệ Thống Cửa Nhôm Cao Cấp
+            </motion.span>
+            <motion.h1
+              variants={heroItem}
+              className="text-white text-[34px] md:text-[64px] font-serif font-semibold leading-tight mb-6 max-w-4xl [text-shadow:0_4px_24px_rgba(0,0,0,0.85)]"
+            >
+              Giải Pháp Cửa Nhôm <br /> Đẳng Cấp
+            </motion.h1>
+            <motion.p
+              variants={heroItem}
+              className="text-white/90 text-[15px] md:text-[18px] mb-10 max-w-2xl mx-auto leading-relaxed [text-shadow:0_2px_12px_rgba(0,0,0,0.8)]"
+            >
+              Khám phá sự hoàn hảo giữa độ bền bỉ của hợp kim nhôm và vẻ đẹp tinh tế của vân gỗ tự nhiên. Hệ thống cửa nhôm của chúng tôi mang đến giải pháp tối ưu cho không gian sống hiện đại.
+            </motion.p>
+            <motion.div variants={heroItem} className="flex flex-col sm:flex-row justify-center gap-6">
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                <Link className="block bg-white text-black px-10 py-5 text-[12px] font-semibold tracking-widest uppercase hover:bg-opacity-90 transition-all shadow-lg" to="/products">
+                  Khám Phá Cửa Nhôm
+                </Link>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                <Link className="block border border-white text-white px-10 py-5 text-[12px] font-semibold tracking-widest uppercase hover:bg-white hover:text-black transition-all" to="/about">
+                  Ưu Điểm Sản Phẩm
+                </Link>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        </section>
+
+        {/* Curated Collections Section - Sản phẩm bán chạy từ API */}
+        <section className="py-[120px] bg-[#f9f9f9] px-[20px] md:px-[80px] max-w-[1440px] mx-auto" id="collections">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="mb-20 text-center md:text-left"
+          >
+            <p className="text-[12px] font-semibold tracking-widest text-[#775a19] mb-4 uppercase">Giải Pháp Nhôm Kính</p>
+            <h2 className="text-[48px] font-serif font-medium text-black">Sản Phẩm Nổi Bật</h2>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {isLoading &&
+              Array.from({ length: 3 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="relative aspect-[4/5] bg-[#eeeeee] animate-pulse"
+                />
+              ))}
+
+            {!isLoading && featuredProducts.length === 0 && (
+              <div className="col-span-3 text-center text-[#444748] py-16 border border-dashed border-[#c4c7c7]">
+                Chưa có sản phẩm nổi bật để hiển thị.
               </div>
-            ))}
+            )}
+
+            {!isLoading &&
+              featuredProducts.map((product, index) => (
+                <motion.div
+                  key={product.ProductId}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.6, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <Link
+                    className="group relative aspect-[4/5] overflow-hidden bg-[#eeeeee] block"
+                    to={`/products/${product.ProductId}-${product.Slug}`}
+                  >
+                    <img
+                      className="w-full h-full object-cover transition-transform duration-1000 ease-[cubic-bezier(0.2,0,0,1)] group-hover:scale-110"
+                      alt={product.ProductName}
+                      src={product?.Media?.[0]?.Url}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                    <div className="absolute bottom-10 left-10 right-10">
+                      <h3 className="text-[28px] md:text-[32px] font-serif font-medium text-white mb-2 line-clamp-2">
+                        {product.ProductName}
+                      </h3>
+                      <p className="text-[12px] font-semibold text-white/70 uppercase tracking-widest">
+                        {product.Categories?.CategoryName || "Hệ Kiến Trúc"}
+                      </p>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
           </div>
-        </div>
-      </section>
-      {/* Categories Section */}
-      <section className="py-16 bg-stone-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-stone-900 mb-4">
-              Danh Mục Sản Phẩm
-            </h2>
-            <p className="text-stone-600 max-w-2xl mx-auto">
-              Đa dạng các loại cửa phù hợp với mọi nhu cầu và phong cách kiến
-              trúc
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {categories.map((cat, index) => (
-              <Link
-                key={index}
-                to="/products"
-                className="group relative overflow-hidden rounded-xl aspect-[3/4] cursor-pointer"
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mt-16 text-center"
+          >
+            <Link className="inline-flex items-center text-[12px] font-semibold text-black border-b border-black pb-2 hover:opacity-60 transition-all uppercase tracking-widest" to="/products">
+              Xem Toàn Bộ Danh Mục
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Link>
+          </motion.div>
+        </section>
+
+        {/* Brand Excellence Section */}
+        <section className="bg-[#f9f9f9] py-[120px] border-t border-[#c4c7c7]/30 overflow-hidden">
+          <div className="px-[20px] md:px-[80px] max-w-[1440px] mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                className="order-2 lg:order-1"
+              >
+                <p className="text-[12px] font-semibold tracking-widest text-[#775a19] mb-6 uppercase">Ưu Điểm Vượt Trội</p>
+                <h2 className="text-[48px] font-serif font-medium text-black mb-8">Bền Bỉ & Thẩm Mỹ Tối Ưu</h2>
+                <p className="text-[18px] text-[#444748] mb-12 leading-relaxed">
+                  Cửa nhôm Đại Nam là sự kết hợp hoàn hảo giữa thiết kế hiện đại và vật liệu nhôm cao cấp. Với lớp vân gỗ sống động như thật cùng khả năng chống chịu thời tiết, chúng tôi mang đến giải pháp bền vững cho mọi công trình.
+                </p>
+
+                <div className="space-y-8">
+                  {[
+                    {
+                      Icon: Wrench,
+                      title: "Khung Nhôm Bền Bỉ",
+                      desc: "Hợp kim nhôm định hình chất lượng cao, chịu lực tốt, không cong vênh hay mối mọt.",
+                    },
+                    {
+                      Icon: Palette,
+                      title: "Màu Sắc & Vân Gỗ",
+                      desc: "Công nghệ sơn tĩnh điện và phủ vân gỗ tiên tiến, màu sắc tự nhiên, chống phai màu theo thời gian.",
+                    },
+                    {
+                      Icon: VolumeX,
+                      title: "Cách Âm & Cách Nhiệt",
+                      desc: "Thiết kế khoang rỗng đa lớp kết hợp hệ gioăng cao cấp cung cấp khả năng cách âm, cách nhiệt hiệu quả.",
+                    },
+                  ].map((feature, index) => (
+                    <motion.div
+                      key={feature.title}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, amount: 0.5 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      className="flex gap-6"
+                    >
+                      <div className="flex-shrink-0 w-12 h-12 bg-black flex items-center justify-center text-white">
+                        <feature.Icon className="w-5 h-5" strokeWidth={1.75} />
+                      </div>
+                      <div>
+                        <h4 className="text-[32px] text-xl font-serif font-medium text-black mb-2">{feature.title}</h4>
+                        <p className="text-[16px] text-[#444748]">{feature.desc}</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                className="relative order-1 lg:order-2 h-[600px] bg-[#eeeeee] overflow-hidden"
               >
                 <img
-                  src={cat.image}
-                  alt={cat.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
+                  alt="A extreme close-up of a high-tech door hinge system."
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9-4I1jHYz9u_9WIRJMQTSOXyVds4nSJ-zhH9ArF9NzyEIC7gJOouTQGVkWPcjC7YOva-cS6u5ErmC3R2jqoQ0_-Xf_9FyI_RTPWjF-WCLLNELr4PyyWq4TgoEOAFjY4UXBrnDA2XmgMYbjzFSA370GquSLlfdmDmKa8wWqKUWz8W6CTb4Oz65Q3ydfkjWwjZqPZdeOMe3LDwUeP60O96JaVe8Am0innDE_9jOEcQOXIEYt7w4zyUIlCNMo-3mXJVykL771ZcI_LE"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6">
-                  <h3 className="text-xl font-bold text-white mb-1">
-                    {cat.name}
-                  </h3>
-                  <p className="text-stone-300 text-sm">{cat.count}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-      {/* Featured Products */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-end mb-12">
-            <div>
-              <h2 className="text-3xl font-bold text-stone-900 mb-4">
-                Sản Phẩm Nổi Bật
-              </h2>
-              <p className="text-stone-600">
-                Những mẫu cửa được khách hàng yêu thích nhất
-              </p>
-            </div>
-            <Link
-              to="/products"
-              className="hidden sm:flex items-center text-amber-700 font-medium hover:text-amber-800"
-            >
-              Xem tất cả <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </div>
-          {/* 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.ProductId} product={product} />
-            ))}
-          </div> */}
+                <div className="absolute inset-0 border-[20px] border-[#f9f9f9]/50 pointer-events-none"></div>
+              </motion.div>
 
-          <div className="mt-8 text-center sm:hidden">
-            <Link to="/products">
-              <Button variant="outline" className="w-full">
-                Xem tất cả sản phẩm
-              </Button>
-            </Link>
+            </div>
           </div>
-        </div>
-      </section>
-      {/* CTA Section */}
-      <section className="py-20 bg-amber-700 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 pattern-grid-lg"></div>
-        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-            Bạn cần tư vấn giải pháp cửa cho công trình?
-          </h2>
-          <p className="text-amber-100 text-lg mb-8 max-w-2xl mx-auto">
-            Đội ngũ kỹ thuật viên giàu kinh nghiệm của chúng tôi sẵn sàng hỗ trợ
-            bạn lựa chọn sản phẩm phù hợp nhất.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Button
-              size="lg"
-              className="bg-white text-amber-800 hover:bg-stone-100"
-            >
-              Gọi ngay: 0912.345.678
-            </Button>
-            <Link to="/contact">
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white text-white hover:bg-white/10"
-              >
-                Gửi yêu cầu tư vấn
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-    </div>
+        </section>
+      </main>
   );
 }

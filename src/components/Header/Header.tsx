@@ -1,142 +1,66 @@
-import { Menu, Phone } from "lucide-react";
-import Button from "~/components/ui/button";
-import { NavLink, useMatch } from "react-router-dom";
-import { useState } from "react";
-import { useDebounce } from "use-debounce";
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from "motion/react";
 
-import { useAllProducts } from "~/hooks/productHooks";
-export default function Header() {
+export default function Header(): React.JSX.Element {
+  const [isScrolled, setIsScrolled] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const navItems = [
-    { to: "/", label: "Trang chủ" },
-    { to: "/products", label: "Sản phẩm" },
-    { to: "/projects", label: "Dự án" },
-    { to: "/pricing", label: "Bảng giá" },
-    { to: "/about", label: "Giới thiệu" },
-    { to: "/contact", label: "Liên hệ" },
+    { label: 'Trang Chủ', to: '/' },
+    { label: 'Dự Án', to: '/projects' },
+    { label: 'Danh Mục', to: '/products' },
+    { label: 'Liên Hệ', to: '/contact' },
   ];
 
-  const isMatch = useMatch("/products/*");
-  const [keyWord, setKeyWord] = useState("");
-  // dùng thư viện thực hiện debounce thay vì dùng setTimeout thủ công
-  // debounce tránh việc gọi API quá nhiều lần khi người dùng gõ từ khóa
-  const [deboundceKeyWord] = useDebounce(keyWord, 500);
-  // callAPi
-  useAllProducts(
-    deboundceKeyWord.trim() ? { Keyword: deboundceKeyWord.trim() } : {},
-  );
-
   return (
-    <header className="bg-white sticky top-0 z-50 shadow-sm">
-      {/* Top Bar */}
-      <div className="bg-gray-900 text-white text-xs py-2 px-4">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <p>Chào mừng đến với Cửa Đẹp Việt Nam - Chất lượng tạo niềm tin</p>
-          <div className="flex gap-4">
-            <a href="#" className="hover:text-orange-400">
-              Tin tức
-            </a>
-            <a href="#" className="hover:text-orange-400">
-              Tuyển dụng
-            </a>
-            <a href="#" className="hover:text-orange-400">
-              Liên hệ
-            </a>
-          </div>
+    <motion.nav
+      initial={{ y: -80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className={`fixed top-0 w-full z-50 transition-all duration-300 border-b border-black/10 backdrop-blur-md ${
+        isScrolled ? 'h-16 bg-[#f9f9f9]/95 shadow-sm' : 'h-20 bg-[#f9f9f9]/80'
+      }`}
+    >
+      <div className="flex justify-between items-center h-full px-[20px] md:px-[80px] max-w-[1440px] mx-auto">
+        <Link className="text-[32px] font-serif font-bold tracking-tight text-black" to="/">
+          Đại Nam
+        </Link>
+
+        <div className="hidden md:flex items-center space-x-10">
+          {navItems.map((item) => (
+            <motion.div key={item.to} whileHover={{ y: -2 }} transition={{ duration: 0.2 }}>
+              <Link
+                className="text-[12px] font-semibold tracking-widest text-[#444748] hover:text-black uppercase transition-colors"
+                to={item.to}
+              >
+                {item.label}
+              </Link>
+            </motion.div>
+          ))}
         </div>
+
+        <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.96 }}>
+          <Link
+            to="/contact"
+            className="inline-block bg-black text-white px-6 py-3 text-[12px] font-semibold tracking-widest uppercase hover:bg-[#775a19] transition-colors duration-300"
+          >
+            Nhận Báo Giá
+          </Link>
+        </motion.div>
       </div>
-      {/* Main Header */}
-      <div className="border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 py-4 md:py-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            {/* Logo */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="bg-orange-600 text-white p-2 rounded-lg">
-                  <svg
-                    width="32"
-                    height="32"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M3 21h18M5 21V7l8-4 8 4v14" />
-                    <path d="M13 11v10" />
-                  </svg>
-                </div>
-                <div>
-                  <h1 className="text-xl md:text-2xl font-bold text-gray-900 leading-none">
-                    CỬA ĐẸP
-                  </h1>
-                  <span className="text-xs text-orange-600 font-bold tracking-widest">
-                    VIỆT NAM
-                  </span>
-                </div>
-              </div>
-
-              <button className="md:hidden p-2 text-gray-600">
-                <Menu className="w-6 h-6" />
-              </button>
-            </div>
-            {/* Search */}
-
-            {isMatch && (
-              <div className="flex-1 max-w-xl mx-auto w-full">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Tìm kiếm sản phẩm theo tên, loại cửa..."
-                    onChange={(e) => setKeyWord(e.target.value)}
-                    className="w-full pl-4 pr-12 py-2.5 rounded-full border border-gray-300 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all"
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Actions */}
-            <div className="hidden md:flex items-center gap-6">
-              <div className="flex items-center gap-2 text-right">
-                <div className="p-2 bg-orange-50 rounded-full text-orange-600">
-                  <Phone className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500">Hotline tư vấn</p>
-                  <p className="font-bold text-gray-900">0912.345.678</p>
-                </div>
-              </div>
-              <Button variant="primary" size="sm">
-                Nhận báo giá
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Navigation */}
-      <nav className="hidden md:block border-b border-gray-100 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <ul className="flex items-center gap-8 text-sm font-medium text-gray-700">
-            {navItems.map((item) => (
-              <li key={item.to}>
-                <NavLink
-                  to={item.to}
-                  end={item.to === "/"}
-                  className={({ isActive }) =>
-                    `block py-4 no-underline !text-gray-900 transition-colors ${
-                      isActive
-                        ? "border-b-2 border-orange-600"
-                        : "hover:text-orange-600"
-                    }`
-                  }
-                >
-                  {item.label}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </nav>
-    </header>
+    </motion.nav>
   );
 }

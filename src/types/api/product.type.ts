@@ -30,7 +30,8 @@ export interface Product {
   IsActive: boolean;
   IsBestSeller: boolean;
   CreatedAt: string;
-  ProductMedia: ProductMedia[];
+  Media: ProductMedia[];      // đổi từ ProductMedia -> Media
+  Category: Category; 
   Categories: Category;
   Slug: string;
 }
@@ -54,4 +55,16 @@ export interface ContactInputForms {
   phone: string;
   email: string;
   message: string;
+}
+
+
+export interface FilterOptionsCategory {
+  CategoryId: number;
+  CategoryName: string;
+}
+
+export interface FilterOptionsResponse {
+  categories: FilterOptionsCategory[];
+  colors: string[];
+  materials: string[];
 }

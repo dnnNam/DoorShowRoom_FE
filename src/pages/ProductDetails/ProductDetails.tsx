@@ -1,17 +1,21 @@
 import productApis from "~/apis/products.apis";
 import { useQuery } from "@tanstack/react-query";
+import { motion } from "motion/react";
+
 import {
   ArrowLeft,
-  Phone,
-  Mail,
+  ArrowRight,
   ShieldCheck,
   Ruler,
   Package,
   Clock,
-  Star,
+  
+  User,
+  Maximize2,
 } from "lucide-react";
 
 import { Link, useParams } from "react-router-dom";
+import Seo from "~/components/seo/Seo";
 
 export default function ProductDetail() {
   const { slugId } = useParams<{ slugId: string }>();
@@ -26,294 +30,269 @@ export default function ProductDetail() {
   const product = data?.data?.data;
 
   return (
-    <div className="bg-gradient-to-br from-stone-50 via-amber-50/20 to-stone-50 min-h-screen">
-      <div className="container mx-auto px-4 py-8 lg:py-12 max-w-7xl">
-        {/* Back Button */}
-        <Link
-          to="/products"
-          className="inline-flex items-center gap-2 text-stone-600 hover:text-amber-700 mb-8 transition-colors duration-200 font-medium group"
-        >
-          <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" />
-          Quay lại danh sách sản phẩm
-        </Link>
+    <div className="bg-[#f9f9f9] min-h-screen">
+      {product && (
+        <Seo
+          title={product.ProductName}
+          description={
+            product.Description?.slice(0, 155) ||
+            `${product.ProductName} - chất liệu ${product.Material}, hàng chính hãng, bảo hành 10 năm tại Đại Nam.`
+          }
+          path={`/products/${product.ProductId}-${product.Slug}`}
+          image={product.Media?.[0]?.Url}
+          type="product"
+        />
+      )}
+      <motion.main
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className="pt-32 pb-32"
+      >
+        <div className="container mx-auto px-4 lg:px-20 max-w-[1440px]">
+          {/* Back Button */}
+          <Link
+            to="/products"
+            className="inline-flex items-center gap-2 text-[#444748] hover:text-black mb-10 transition-colors duration-200 font-medium group"
+          >
+            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" />
+            Quay lại danh sách sản phẩm
+          </Link>
 
-        {/* Main Product Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-12">
-          {/* Product Image */}
-          <div className="bg-white rounded-3xl shadow-xl overflow-hidden group hover:shadow-2xl transition-shadow duration-300">
-            <div className="aspect-square relative">
-              <img
-                src={product?.ProductMedia[0]?.Url}
-                alt={product?.ProductName}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute top-4 right-4 bg-amber-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
-                Sản phẩm cao cấp
+          {/* Split Screen */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            {/* Left: Visual */}
+            <div className="space-y-6 lg:sticky lg:top-32">
+              <div className="relative group overflow-hidden bg-[#eeeeee] shadow-xl">
+                <img
+                  src={product?.Media?.[0]?.Url}
+                  alt={product?.ProductName}
+                  className="w-full h-[500px] lg:h-[700px] object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
+                />
+                <div className="absolute bottom-6 left-6">
+                  <button className="bg-white/90 backdrop-blur-sm p-3 hover:bg-white transition-all">
+                    <Maximize2 className="w-5 h-5 text-black" />
+                  </button>
+                </div>
+                <div className="absolute top-4 right-4 bg-[#775a19] text-white px-4 py-2 text-xs font-semibold uppercase tracking-widest">
+                  Sản phẩm cao cấp
+                </div>
               </div>
+
+              {/* Thumbnail gallery - chỉ hiện khi có nhiều hơn 1 ảnh */}
+              {product?.Media && product.Media.length > 1 && (
+                <div className="grid grid-cols-4 gap-4">
+                  {product.Media.map((media, idx) => (
+                    <div
+                      key={media.MediaId}
+                      className={`overflow-hidden cursor-pointer transition-all ${
+                        idx === 0
+                          ? "ring-2 ring-black"
+                          : "bg-[#eeeeee] hover:opacity-80"
+                      }`}
+                    >
+                      <img
+                        src={media.Url}
+                        alt={`${product.ProductName} ${idx + 1}`}
+                        className="w-full aspect-square object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
 
-          {/* Product Info */}
-          <div className="flex flex-col justify-center">
-            {/* Category Badge */}
-            <span className="inline-block px-4 py-2 bg-gradient-to-r from-amber-100 to-amber-50 text-amber-800 text-sm font-semibold rounded-full mb-4 w-fit border border-amber-200">
-              {product?.Categories?.CategoryName}
-            </span>
+            {/* Right: Product Info */}
+            <div className="lg:pl-8 space-y-10">
+              <header className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-[#775a19] uppercase tracking-widest">
+                    {product?.Category?.CategoryName}
+                  </span>
+                  <span className="h-px w-12 bg-[#c4c7c7]" />
+                </div>
+                <h1 className="font-['Playfair_Display'] text-4xl lg:text-6xl font-medium text-black leading-tight">
+                  {product?.ProductName}
+                </h1>
 
-            {/* Product Name */}
-            <h1 className="text-3xl lg:text-5xl font-extrabold text-stone-900 leading-tight mb-4 tracking-tight">
-              {product?.ProductName}
-            </h1>
+              </header>
 
-            {/* Rating */}
-            <div className="flex items-center gap-3 mb-6">
-              <div className="flex gap-1">
-                {[1, 2, 3, 4].map((i) => (
-                  <Star
-                    key={i}
-                    className="w-5 h-5 fill-amber-400 text-amber-400"
-                  />
-                ))}
-                <Star className="w-5 h-5 fill-stone-200 text-stone-200" />
-              </div>
-              <span className="text-stone-600 font-medium">
-                4.0 <span className="text-stone-400">(128 đánh giá)</span>
-              </span>
-            </div>
-
-            {/* Price */}
-            <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-2xl p-6 mb-6">
-              <div className="flex items-baseline gap-3 mb-2">
-                <span className="text-4xl lg:text-5xl font-extrabold text-amber-700">
-                  {Number(product?.Price).toLocaleString("vi-VN")}₫
-                </span>
-              </div>
-              <p className="text-sm text-stone-600">
-                <span className="font-semibold">*</span> Giá đã bao gồm VAT
+              <p className="text-lg text-[#444748] leading-relaxed max-w-xl">
+                {product?.ProductName} được chế tác từ{" "}
+                <strong className="text-black">{product?.Material}</strong>,
+                mang phong cách cổ điển sang trọng, phù hợp cho nhà phố, biệt
+                thự và công trình cao cấp.
               </p>
-            </div>
 
-            {/* Description */}
-            <p className="text-stone-700 leading-relaxed mb-6 text-lg">
-              {product?.ProductName} được chế tác từ{" "}
-              <strong className="text-amber-800">{product?.Material}</strong>,
-              mang phong cách cổ điển sang trọng, phù hợp cho nhà phố, biệt thự
-              và công trình cao cấp.
-            </p>
+              {/* Specs list */}
+              <div className="space-y-6 border-y border-[#c4c7c7] py-8">
+                {product?.Size && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-semibold text-[#767586] uppercase tracking-widest">
+                      Kích thước
+                    </span>
+                    <span className="text-black font-medium">
+                      {product.Size}
+                    </span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-semibold text-[#767586] uppercase tracking-widest">
+                    Chất liệu
+                  </span>
+                  <span className="text-black font-medium">
+                    {product?.Material}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-semibold text-[#767586] uppercase tracking-widest">
+                    Bảo hành
+                  </span>
+                  <span className="text-black font-medium">10 năm</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-semibold text-[#767586] uppercase tracking-widest">
+                    Lắp đặt
+                  </span>
+                  <span className="text-black font-medium">
+                    Tư vấn chuyên nghiệp
+                  </span>
+                </div>
+              </div>
 
-            {/* Trust Badges */}
-            <div className="bg-white border-2 border-stone-100 rounded-2xl p-6 mb-6 shadow-sm">
-              <h3 className="font-bold text-lg flex items-center gap-2 mb-4 text-stone-900">
-                <ShieldCheck className="w-6 h-6 text-amber-600" />
-                Cam kết chất lượng
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="flex items-center gap-2 text-stone-700">
-                  <span className="w-2 h-2 bg-amber-600 rounded-full"></span>
-                  <span className="font-medium">Chính hãng 100%</span>
+              {/* Actions */}
+              <div className="space-y-4">
+                <Link
+                  to="/contact"
+                  className="w-full bg-black hover:bg-[#775a19] text-white text-sm font-semibold uppercase tracking-widest py-6 transition-colors duration-300 flex items-center justify-center gap-3"
+                >
+                  <span>Yêu cầu báo giá</span>
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+                <div >
+                  <Link
+                    to="/contact"
+                    className="border border-[#c4c7c7] hover:border-black hover:bg-[#f9f9f9] py-4 flex items-center justify-center gap-2 transition-all duration-300"
+                  >
+                    <User className="w-5 h-5" />
+                    <div className="text-xs font-semibold uppercase tracking-widest">
+                      Liên hệ tư vấn
+                    </div>
+                  </Link>
+                 
                 </div>
-                <div className="flex items-center gap-2 text-stone-700">
-                  <span className="w-2 h-2 bg-amber-600 rounded-full"></span>
-                  <span className="font-medium">Bảo hành 10 năm</span>
+              </div>
+
+              {/* Feature card */}
+              <div className="bg-white border border-[#c4c7c7] p-8 flex items-start gap-6">
+                <div className="bg-[#775a19]/10 p-4 rounded-full">
+                  <ShieldCheck className="w-8 h-8 text-[#775a19]" />
                 </div>
-                <div className="flex items-center gap-2 text-stone-700">
-                  <span className="w-2 h-2 bg-amber-600 rounded-full"></span>
-                  <span className="font-medium">Lắp đặt miễn phí</span>
+                <div>
+                  <h4 className="font-['Playfair_Display'] text-xl mb-2 text-black">
+                    Cam kết chất lượng
+                  </h4>
+                  <p className="text-[#444748] text-sm leading-relaxed">
+                    Chính hãng 100%, bảo hành 10 năm, lắp đặt miễn phí bởi đội
+                    ngũ kỹ thuật viên chuyên nghiệp.
+                  </p>
                 </div>
               </div>
             </div>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link
-                to="/contact"
-                className="flex-1 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 transition-all duration-300 text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 transform"
-              >
-                <Phone className="w-5 h-5" />
-                Liên hệ ngay
-              </Link>
-              <Link
-                to="/contact"
-                className="flex-1 border-2 border-stone-300 hover:border-amber-600 hover:bg-amber-50 transition-all duration-300 font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-2 text-stone-700 hover:text-amber-700"
-              >
-                <Mail className="w-5 h-5" />
-                Yêu cầu báo giá
-              </Link>
-            </div>
           </div>
-        </div>
 
-        {/* Description & Specifications */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Description */}
-          <div className="lg:col-span-2 bg-white p-8 lg:p-10 rounded-3xl shadow-lg border border-stone-100">
-            <h2 className="text-3xl font-bold mb-6 text-stone-900 flex items-center gap-3">
-              <span className="w-1.5 h-8 bg-amber-600 rounded-full"></span>
-              Mô tả sản phẩm
-            </h2>
+          {/* Description & warranty section */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-24">
+            <div className="lg:col-span-2 bg-white p-8 lg:p-10 border border-[#c4c7c7]">
+              <h2 className="font-['Playfair_Display'] text-3xl mb-6 text-black flex items-center gap-3">
+                <span className="w-1.5 h-8 bg-[#775a19]"></span>
+                Mô tả sản phẩm
+              </h2>
 
-            <div className="space-y-6">
-              {/* Main Description */}
-              <div className="prose prose-lg max-w-none">
-                <p className="text-stone-700 leading-relaxed text-lg">
+              <div className="space-y-6">
+                <p className="text-[#444748] leading-relaxed text-lg">
                   {product?.Description}
                 </p>
-              </div>
 
-              {/* Feature Highlights */}
-              <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border-l-4 border-amber-600">
-                <h3 className="font-bold text-xl text-stone-900 mb-4">
-                  Điểm nổi bật
-                </h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-3">
-                    <span className="text-amber-600 font-bold mt-1">•</span>
-                    <span className="text-stone-700">
-                      <strong>Chất liệu cao cấp:</strong> Được làm từ{" "}
-                      {product?.Material} nguyên khối, đảm bảo độ bền vượt trội
-                      và khả năng chống chịu thời tiết tốt.
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-amber-600 font-bold mt-1">•</span>
-                    <span className="text-stone-700">
-                      <strong>Thiết kế tinh xảo:</strong> Mỗi chi tiết được chạm
-                      khắc và hoàn thiện bởi những nghệ nhân lành nghề với hơn
-                      20 năm kinh nghiệm.
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-amber-600 font-bold mt-1">•</span>
-                    <span className="text-stone-700">
-                      <strong>Phong cách đa năng:</strong> Phù hợp với nhiều
-                      phong cách kiến trúc từ cổ điển, hiện đại đến tân cổ điển.
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-amber-600 font-bold mt-1">•</span>
-                    <span className="text-stone-700">
-                      <strong>Tiêu chuẩn xuất khẩu:</strong> Đạt chứng nhận chất
-                      lượng quốc tế, an toàn tuyệt đối cho sức khỏe người sử
-                      dụng.
-                    </span>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Application Areas */}
-              <div>
-                <h3 className="font-bold text-xl text-stone-900 mb-4">
-                  Ứng dụng
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="bg-stone-50 rounded-xl p-4 border border-stone-200">
-                    <p className="font-semibold text-stone-800 mb-1">Nhà phố</p>
-                    <p className="text-sm text-stone-600">
-                      Tăng tính thẩm mỹ và giá trị cho căn nhà
+                <div className="bg-[#f9f9f9] p-6 border border-[#c4c7c7]">
+                  <h3 className="font-semibold text-xl text-black mb-4">
+                    Bảo hành &amp; Dịch vụ
+                  </h3>
+                  <div className="space-y-3 text-[#444748]">
+                    <p className="flex items-start gap-2">
+                      <span className="text-[#775a19]">✓</span>
+                      <span>
+                        Bảo hành chính hãng <strong>10 năm</strong> đối với
+                        lỗi kỹ thuật và vật liệu
+                      </span>
+                    </p>
+                    <p className="flex items-start gap-2">
+                      <span className="text-[#775a19]">✓</span>
+                      <span>
+                        Lắp đặt miễn phí bởi đội ngũ kỹ thuật viên chuyên
+                        nghiệp
+                      </span>
+                    </p>
+                    <p className="flex items-start gap-2">
+                      <span className="text-[#775a19]">✓</span>
+                      <span>
+                        Tư vấn thiết kế và chọn sản phẩm phù hợp không mất phí
+                      </span>
+                    </p>
+                    <p className="flex items-start gap-2">
+                      <span className="text-[#775a19]">✓</span>
+                      <span>
+                        Hỗ trợ bảo trì định kỳ và chăm sóc sau bán hàng chu
+                        đáo
+                      </span>
                     </p>
                   </div>
-                  <div className="bg-stone-50 rounded-xl p-4 border border-stone-200">
-                    <p className="font-semibold text-stone-800 mb-1">
-                      Biệt thự
-                    </p>
-                    <p className="text-sm text-stone-600">
-                      Tôn vinh đẳng cấp và sự sang trọng
-                    </p>
-                  </div>
-                  <div className="bg-stone-50 rounded-xl p-4 border border-stone-200">
-                    <p className="font-semibold text-stone-800 mb-1">
-                      Khách sạn
-                    </p>
-                    <p className="text-sm text-stone-600">
-                      Tạo ấn tượng mạnh mẽ cho khách hàng
-                    </p>
-                  </div>
-                  <div className="bg-stone-50 rounded-xl p-4 border border-stone-200">
-                    <p className="font-semibold text-stone-800 mb-1">
-                      Showroom
-                    </p>
-                    <p className="text-sm text-stone-600">
-                      Thể hiện sự chuyên nghiệp và đẳng cấp
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Warranty & Service */}
-              <div className="bg-blue-50 rounded-2xl p-6 border border-blue-200">
-                <h3 className="font-bold text-xl text-stone-900 mb-4">
-                  Bảo hành & Dịch vụ
-                </h3>
-                <div className="space-y-3 text-stone-700">
-                  <p className="flex items-start gap-2">
-                    <span className="text-blue-600">✓</span>
-                    <span>
-                      Bảo hành chính hãng <strong>10 năm</strong> đối với lỗi kỹ
-                      thuật và vật liệu
-                    </span>
-                  </p>
-                  <p className="flex items-start gap-2">
-                    <span className="text-blue-600">✓</span>
-                    <span>
-                      Lắp đặt miễn phí bởi đội ngũ kỹ thuật viên chuyên nghiệp
-                    </span>
-                  </p>
-                  <p className="flex items-start gap-2">
-                    <span className="text-blue-600">✓</span>
-                    <span>
-                      Tư vấn thiết kế và chọn sản phẩm phù hợp không mất phí
-                    </span>
-                  </p>
-                  <p className="flex items-start gap-2">
-                    <span className="text-blue-600">✓</span>
-                    <span>
-                      Hỗ trợ bảo trì định kỳ và chăm sóc sau bán hàng chu đáo
-                    </span>
-                  </p>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Specifications */}
-          <div className="bg-gradient-to-br from-white to-amber-50/30 p-8 lg:p-10 rounded-3xl shadow-lg border border-stone-100">
-            <h2 className="text-2xl font-bold mb-6 text-stone-900">
-              Thông số kỹ thuật
-            </h2>
-            <ul className="space-y-5">
-              <li className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm border border-stone-100">
-                <Package className="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-xs text-stone-500 font-semibold mb-1">
-                    Chất liệu
-                  </p>
-                  <p className="text-stone-800 font-bold">
-                    {product?.Material}
-                  </p>
-                </div>
-              </li>
-              <li className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm border border-stone-100">
-                <Ruler className="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-xs text-stone-500 font-semibold mb-1">
-                    Kích thước
-                  </p>
-                  <p className="text-stone-800 font-bold">{product?.Size}</p>
-                </div>
-              </li>
-              <li className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm border border-stone-100">
-                <Clock className="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-xs text-stone-500 font-semibold mb-1">
-                    Bảo hành
-                  </p>
-                  <p className="text-stone-800 font-bold">10 năm</p>
-                </div>
-              </li>
-            </ul>
+            {/* Specifications sidebar */}
+            <div className="bg-white p-8 lg:p-10 border border-[#c4c7c7]">
+              <h2 className="text-2xl font-semibold mb-6 text-black">
+                Thông số kỹ thuật
+              </h2>
+              <ul className="space-y-5">
+                <li className="flex items-start gap-4 p-4 bg-[#f9f9f9] border border-[#c4c7c7]">
+                  <Package className="w-6 h-6 text-[#775a19] flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-xs text-[#767586] font-semibold mb-1">
+                      Chất liệu
+                    </p>
+                    <p className="text-black font-semibold">
+                      {product?.Material}
+                    </p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-4 p-4 bg-[#f9f9f9] border border-[#c4c7c7]">
+                  <Ruler className="w-6 h-6 text-[#775a19] flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-xs text-[#767586] font-semibold mb-1">
+                      Kích thước
+                    </p>
+                    <p className="text-black font-semibold">
+                      {product?.Size || "Đang cập nhật"}
+                    </p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-4 p-4 bg-[#f9f9f9] border border-[#c4c7c7]">
+                  <Clock className="w-6 h-6 text-[#775a19] flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-xs text-[#767586] font-semibold mb-1">
+                      Bảo hành
+                    </p>
+                    <p className="text-black font-semibold">10 năm</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
+      </motion.main>
     </div>
   );
 }

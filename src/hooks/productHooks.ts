@@ -21,3 +21,20 @@ export const useAllProducts = (params: UseProductsParams) => {
     isError: query.isError,
   };
 };
+
+export const useFilterOptions = () => {
+  const query = useQuery({
+    queryKey: ["filter-options"],
+    queryFn: () => productApis.getFilterOptions(),
+    staleTime: 10 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+  });
+
+  return {
+    categories: query.data?.data?.data?.categories ?? [],
+    colors: query.data?.data?.data?.colors ?? [],
+    materials: query.data?.data?.data?.materials ?? [],
+    isLoading: query.isLoading,
+    isError: query.isError,
+  };
+};

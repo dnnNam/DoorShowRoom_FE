@@ -1,169 +1,155 @@
-import {
-  Clock,
-  DoorOpen,
-  Facebook,
-  Instagram,
-  Mail,
-  MapPin,
-  Phone,
-  Youtube,
-} from "lucide-react";
+import React from "react";
 import { Link } from "react-router-dom";
-export default function Footer() {
+import { motion } from "motion/react";
+import { MapPin, Phone, Mail } from "lucide-react";
+
+export default function Footer(): React.JSX.Element {
   return (
-    <footer className="bg-stone-900 text-stone-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Company Info */}
-          <div>
-            <div className="flex items-center space-x-2 mb-6">
-              <div className="bg-amber-700 p-1.5 rounded-lg">
-                <DoorOpen className="h-6 w-6 text-white" />
-              </div>
-              <span className="text-xl font-bold text-white">CỬA ĐẸP VN</span>
+    <motion.footer
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className="w-full pt-[100px] pb-8 bg-[#f9f9f9] border-t border-[#c4c7c7]"
+    >
+      <div className="grid grid-cols-12 gap-8 px-[20px] md:px-[80px] max-w-[1440px] mx-auto">
+
+        {/* Brand */}
+        <div className="col-span-12 md:col-span-4">
+          <Link
+            to="/"
+            className="text-[32px] font-['Playfair_Display'] font-bold text-black block mb-6"
+          >
+            Đại Nam
+          </Link>
+
+          <p className="text-[15px] text-[#444748] leading-relaxed mb-8 max-w-xs">
+            Chuyên sản xuất, lắp đặt cửa cuốn, cửa nhôm Xingfa, cửa kính cường
+            lực và cầu thang kính — đồng hành cùng mọi công trình 
+          </p>
+
+          <div className="space-y-3">
+            <a
+              href="tel:0917592668"
+              className="flex items-center gap-3 text-[14px] text-[#444748] hover:text-black transition-colors"
+            >
+              <Phone className="w-4 h-4" />
+                0913 845 613
+            </a>
+
+            <a
+              href="mailto:lienhe@cuadepviet.com"
+              className="flex items-center gap-3 text-[14px] text-[#444748] hover:text-black transition-colors"
+            >
+              <Mail className="w-4 h-4" />
+              nguyenphatnam@gmail.com
+            </a>
+
+            <div className="flex items-start gap-3 text-[14px] text-[#444748]">
+              <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
+              <span>
+               25 Phan Đình Phùng, Đức Trọng, Lâm Đồng
+              </span>
             </div>
-            <p className="text-sm text-stone-400 mb-6 leading-relaxed">
-              Chuyên cung cấp các loại cửa gỗ, cửa thép, cửa nhựa cao cấp. Mang
-              đến vẻ đẹp sang trọng và sự an toàn cho ngôi nhà của bạn.
-            </p>
-            <div className="flex space-x-4">
-              <a
-                href="#"
-                className="text-stone-400 hover:text-white transition-colors"
-              >
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                className="text-stone-400 hover:text-white transition-colors"
-              >
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                className="text-stone-400 hover:text-white transition-colors"
-              >
-                <Youtube className="h-5 w-5" />
-              </a>
-            </div>
-          </div>
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-white font-semibold mb-4">Liên kết nhanh</h3>
-            <ul className="space-y-3 text-sm">
-              <li>
-                <Link to="/" className="hover:text-amber-500 transition-colors">
-                  Trang chủ
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/products"
-                  className="hover:text-amber-500 transition-colors"
-                >
-                  Sản phẩm
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/about"
-                  className="hover:text-amber-500 transition-colors"
-                >
-                  Giới thiệu
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/contact"
-                  className="hover:text-amber-500 transition-colors"
-                >
-                  Liên hệ
-                </Link>
-              </li>
-              <li>
-                <a href="#" className="hover:text-amber-500 transition-colors">
-                  Chính sách bảo hành
-                </a>
-              </li>
-            </ul>
-          </div>
-          {/* Products */}
-          <div>
-            <h3 className="text-white font-semibold mb-4">Sản phẩm chính</h3>
-            <ul className="space-y-3 text-sm">
-              <li>
-                <Link
-                  to="/products?category=wood"
-                  className="hover:text-amber-500 transition-colors"
-                >
-                  Cửa gỗ tự nhiên
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/products?category=steel"
-                  className="hover:text-amber-500 transition-colors"
-                >
-                  Cửa thép vân gỗ
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/products?category=glass"
-                  className="hover:text-amber-500 transition-colors"
-                >
-                  Cửa kính cường lực
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/products?category=fire"
-                  className="hover:text-amber-500 transition-colors"
-                >
-                  Cửa chống cháy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/products?category=plastic"
-                  className="hover:text-amber-500 transition-colors"
-                >
-                  Cửa nhựa Composite
-                </Link>
-              </li>
-            </ul>
-          </div>
-          {/* Contact Info */}
-          <div>
-            <h3 className="text-white font-semibold mb-4">Thông tin liên hệ</h3>
-            <ul className="space-y-4 text-sm">
-              <li className="flex items-start">
-                <MapPin className="h-5 w-5 text-amber-600 mr-3 flex-shrink-0" />
-                <span>123 Đường Nguyễn Trãi, Quận Thanh Xuân, Hà Nội</span>
-              </li>
-              <li className="flex items-center">
-                <Phone className="h-5 w-5 text-amber-600 mr-3 flex-shrink-0" />
-                <span>0912.345.678</span>
-              </li>
-              <li className="flex items-center">
-                <Mail className="h-5 w-5 text-amber-600 mr-3 flex-shrink-0" />
-                <span>contact@cuadepvn.com</span>
-              </li>
-              <li className="flex items-center">
-                <Clock className="h-5 w-5 text-amber-600 mr-3 flex-shrink-0" />
-                <span>8:00 - 18:00 (Thứ 2 - Thứ 7)</span>
-              </li>
-            </ul>
           </div>
         </div>
 
-        <div className="border-t border-stone-800 mt-12 pt-8 text-center text-sm text-stone-500">
-          <p>
-            &copy; {new Date().getFullYear()} Cửa Đẹp Việt Nam. All rights
-            reserved.
-          </p>
+        {/* Sản phẩm */}
+        <div className="col-span-12 md:col-span-4">
+          <h4 className="text-[12px] font-semibold tracking-widest text-black mb-6 uppercase">
+            Sản Phẩm
+          </h4>
+
+          <ul className="space-y-4">
+            <li>
+              <Link
+                to="/products"
+                className="text-[15px] text-[#444748] hover:text-black transition-colors"
+              >
+                Cửa Nhôm Xingfa
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                to="/products"
+                className="text-[15px] text-[#444748] hover:text-black transition-colors"
+              >
+                Cửa Kính Cường Lực
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                to="/products"
+                className="text-[15px] text-[#444748] hover:text-black transition-colors"
+              >
+                Cửa Cuốn
+              </Link>
+            </li>
+          </ul>
         </div>
+
+        {/* Công ty */}
+        <div className="col-span-12 md:col-span-4">
+          <h4 className="text-[12px] font-semibold tracking-widest text-black mb-6 uppercase">
+            Công Ty
+          </h4>
+
+          <ul className="space-y-4">
+            <li>
+              <Link
+                to="/about"
+                className="text-[15px] text-[#444748] hover:text-black transition-colors"
+              >
+                Câu Chuyện Của Chúng Tôi
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                to="/projects"
+                className="text-[15px] text-[#444748] hover:text-black transition-colors"
+              >
+                Dự Án
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                to="/contact"
+                className="text-[15px] text-[#444748] hover:text-black transition-colors"
+              >
+                Showroom
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="col-span-12 mt-16 pt-8 border-t border-[#c4c7c7] flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-[11px] tracking-widest text-[#747878] text-center md:text-left">
+            © 2024 Hệ Thống Kiến Trúc Đại Nam. Đã đăng ký bản quyền.
+          </p>
+
+          <div className="flex gap-8">
+            <a
+              href="#"
+              className="text-[11px] tracking-widest text-[#747878] hover:text-black uppercase transition-colors"
+            >
+              Chính Sách Bảo Mật
+            </a>
+
+            <a
+              href="#"
+              className="text-[11px] tracking-widest text-[#747878] hover:text-black uppercase transition-colors"
+            >
+              Điều Khoản Dịch Vụ
+            </a>
+          </div>
+        </div>
+
       </div>
-    </footer>
+    </motion.footer>
   );
 }

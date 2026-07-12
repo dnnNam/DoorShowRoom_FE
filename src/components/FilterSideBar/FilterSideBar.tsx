@@ -1,9 +1,9 @@
 import React from "react";
 
-import { FilterX } from "lucide-react";
+import { FilterX, Loader2 } from "lucide-react";
 import Checkbox from "~/components/ui/checkbox";
 import type { FilterState } from "~/types/domain/product.type";
-import { CATEGORIES, COLOR_MAP, COLORS, MATERIALS } from "~/constants/filter";
+import { useFilterOptions } from "~/hooks/productHooks";
 import { toggleFilterItem } from "~/utils/products.helper";
 
 interface FilterSidebarProps {
@@ -17,6 +17,8 @@ export function FilterSidebar({
   setFilters,
   className = "",
 }: FilterSidebarProps) {
+  const { categories, colors, materials, isLoading } = useFilterOptions();
+
   const handleToggleChange = <
     T extends keyof Pick<FilterState, "CategoryId" | "Materials" | "Colors">,
   >(
@@ -25,7 +27,11 @@ export function FilterSidebar({
   ) => {
     setFilters((prev) => {
       const currentValue = prev[key] as FilterState[T][number][];
-      const updatedValue = toggleFilterItem(currentValue, value);
+      // ép generic tường minh để khớp với FilterState[T][number]
+      const updatedValue = toggleFilterItem<FilterState[T][number]>(
+        currentValue,
+        value,
+      );
       return {
         ...prev,
         [key]: updatedValue,
@@ -34,19 +40,9 @@ export function FilterSidebar({
     });
   };
 
-  const handlePriceChange = (key: "minPrice" | "maxPrice", value: number) => {
-    setFilters((prev) => ({
-      ...prev,
-      [key]: value,
-      page: 1,
-    }));
-  };
-
   const clearFilters = () => {
     setFilters({
       CategoryId: [],
-      minPrice: 0,
-      maxPrice: 8500000,
       Materials: [],
       Colors: [],
       OrderBy: "",
@@ -55,13 +51,7 @@ export function FilterSidebar({
       limit: 6,
     });
   };
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
+
   return (
     <div className={`space-y-8 ${className}`}>
       <div className="flex items-center justify-between">
@@ -73,105 +63,76 @@ export function FilterSidebar({
           <FilterX className="w-3 h-3" /> Xóa
         </button>
       </div>
-      {/* Categories */}
-      <div className="space-y-3">
-        <h4 className="font-medium text-gray-900">Danh mục</h4>
-        <div className="space-y-2">
-          {CATEGORIES.map((cat) => (
-            <Checkbox
-              key={cat?.id}
-              label={cat?.label}
-              checked={filters.CategoryId.includes(cat?.id)}
-              onChange={() => handleToggleChange("CategoryId", cat?.id)}
-            />
-          ))}
-        </div>
-      </div>
-      {/* Price Range */}
-      <div className="space-y-4">
-        <h4 className="font-medium text-gray-900">Khoảng giá</h4>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between text-sm text-gray-600">
-            <span>{formatPrice(filters.minPrice)}</span>
-            <span>{formatPrice(filters.maxPrice)}</span>
-          </div>
-          <div className="relative h-2 bg-gray-200 rounded-full">
-            <div
-              className="absolute h-full bg-orange-500 rounded-full"
-              style={{
-                left: `${(filters.minPrice / 50000000) * 100}%`,
-                right: `${100 - (filters.maxPrice / 50000000) * 100}%`,
-              }}
-            />
-            <input
-              type="range"
-              min="0"
-              max="50000000"
-              step="500000"
-              value={filters.minPrice}
-              onChange={(e) => {
-                const val = Math.min(
-                  parseInt(e.target.value),
-                  filters.maxPrice - 1000000,
-                );
-                handlePriceChange("minPrice", val);
-              }}
-              className="absolute w-full h-full opacity-0 cursor-pointer z-10"
-            />
-            <input
-              type="range"
-              min="0"
-              max="50000000"
-              step="500000"
-              value={filters.maxPrice}
-              onChange={(e) => {
-                const val = Math.max(
-                  parseInt(e.target.value),
-                  filters.minPrice + 1000000,
-                );
-                handlePriceChange("maxPrice", val);
-              }}
-              className="absolute w-full h-full opacity-0 cursor-pointer z-10"
-            />
-          </div>
-        </div>
-      </div>
-      {/* Materials */}
-      <div className="space-y-3">
-        <h4 className="font-medium text-gray-900">Chất liệu</h4>
-        <div className="space-y-2">
-          {MATERIALS.map((mat) => (
-            <Checkbox
-              key={mat}
-              label={mat}
-              checked={filters.Materials.includes(mat)}
-              onChange={() => handleToggleChange("Materials", mat)}
-            />
-          ))}
-        </div>
-      </div>
 
-      {/* Colors */}
-      <div className="space-y-3">
-        <h4 className="font-medium text-gray-900">Màu sắc</h4>
-        <div className="flex flex-wrap gap-3">
-          {COLORS.map((color) => (
-            <button
-              key={color}
-              onClick={() => handleToggleChange("Colors", color)}
-              className={`w-8 h-8 rounded-full border shadow-sm relative transition-transform hover:scale-110 ${
-                filters.Colors.includes(color)
-                  ? "ring-2 ring-offset-2 ring-orange-500"
-                  : ""
-              }`}
-              style={{ backgroundColor: COLOR_MAP[color] }}
-              title={color}
-            >
-              {color === "Trắng" && <span className="sr-only">White</span>}
-            </button>
-          ))}
+      {isLoading ? (
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <Loader2 className="w-4 h-4 animate-spin" />
+          Đang tải bộ lọc...
         </div>
-      </div>
+      ) : (
+        <>
+          {/* Categories */}
+          {categories.length > 0 && (
+            <div className="space-y-3">
+              <h4 className="font-medium text-gray-900">Danh mục</h4>
+              <div className="space-y-2">
+                {categories.map((cat) => (
+                  <Checkbox
+                    key={cat.CategoryId}
+                    label={cat.CategoryName}
+                    checked={filters.CategoryId.includes(cat.CategoryId)}
+                    onChange={() =>
+                      handleToggleChange("CategoryId", cat.CategoryId)
+                    }
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Materials */}
+          {materials.length > 0 && (
+            <div className="space-y-3">
+              <h4 className="font-medium text-gray-900">Chất liệu</h4>
+              <div className="space-y-2">
+                {materials.map((mat) => (
+                  <Checkbox
+                    key={mat}
+                    label={mat}
+                    checked={filters.Materials.includes(mat)}
+                    onChange={() => handleToggleChange("Materials", mat)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Colors */}
+          {colors.length > 0 && (
+            <div className="space-y-3">
+              <h4 className="font-medium text-gray-900">Màu sắc</h4>
+              <div className="flex flex-wrap gap-2">
+                {colors.map((color) => {
+                  const isActive = filters.Colors.includes(color);
+                  return (
+                    <button
+                      key={color}
+                      onClick={() => handleToggleChange("Colors", color)}
+                      className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-colors ${
+                        isActive
+                          ? "bg-orange-600 text-white border-orange-600"
+                          : "bg-white text-gray-700 border-gray-300 hover:border-orange-400"
+                      }`}
+                    >
+                      {color}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
